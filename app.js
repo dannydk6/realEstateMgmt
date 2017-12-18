@@ -4,7 +4,6 @@ require('./auth');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const chartMaker = require('chart.js')
 const passport = require('passport');
 const mongoose = require('mongoose');
 
