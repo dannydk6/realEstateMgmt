@@ -1,0 +1,115 @@
+body {
+	margin: 0;
+	background-color: #86CFF8;
+
+}
+
+p{
+	text-align: center;
+	color: white;
+}
+
+nav ul li {
+	color: white;
+	display: inline-block;
+	list-style-type: none;
+	padding: 5px 50px; 
+}
+nav ul li a {
+	color: white;
+}
+
+.row:after {
+	clear:both;
+	content:"";
+	display: table;
+	margin-top:1em;
+}
+
+.col {
+
+	border-radius: 5px;
+	color: white;
+	padding: 10px 0.5%;
+	float: left;
+	margin: 0.5%;
+	width: 31%;
+
+}
+
+ul{
+	list-style-type: none;
+}
+
+li{
+	margin-right: 3em;
+}
+
+div{
+	text-align:center;
+}
+
+div.bottle{
+	vertical-align: top;
+}
+
+img.bottle {
+	width:8em;
+    height: auto;
+}
+
+footer {
+	clear: both;
+}
+
+button.addLog {
+margin-bottom:1em;
+}
+
+div.footer {
+	margin-top:2em;
+	margin-bottom: 2em;
+
+}
+
+div.button{
+	margin-top:2em;
+	margin-bottom:1em;
+}
+
+div.aligner{
+	margin-right:6.3em;
+}
+
+div.graph{
+	max-width: 60%;
+	border-radius: 5px;
+	color: white;
+	padding: 10px 0.5%;
+	margin: 0.5%;
+	float: left;
+
+}
+div.hidden{
+	display:none;
+}
+
+canvas
+{
+    display: block;
+    margin: 0 auto;
+}
+
+
+input.longer{
+	width:20em;
+}
+
+a.button {
+    background: #4E9CAF;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
