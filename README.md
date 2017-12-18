@@ -20,9 +20,9 @@ An Example User:
   username: "dannydk6",
   hash: // a password hash,
   dates: // an array of references to dates documents,
-  preferences: {backgroundColor: "#FF0000", preferredUnit: "oz", dailyGoal: 60}
+  preferences: {preferredUnit: "oz", dailyGoal: 60}
   currentAmount: 43, // percent of daily goal reached.
-  customBottles: //an array of references to container documents.
+  customBottles: //an array of embedded 'containers'.
 }
 ```
 
@@ -30,7 +30,6 @@ An Example Dates with Embedded objects, numbers, and strings:
 
 ```javascript
 {
-  user: // a reference to a User object,
   month: 9,
   day: 18,
   year: 2017,
@@ -42,6 +41,7 @@ An Example Dates with Embedded objects, numbers, and strings:
   ]
 }
 ```
+
 An Example Container with embedded numbers, and strings:
 
 ```javascript
@@ -54,7 +54,7 @@ An Example Container with embedded numbers, and strings:
 }
 ```
 
-## [Link to Commented First Draft Schema](db.js) 
+## [Link to Commented Database Schema](db.js) 
 
 ## Wireframes
 
@@ -62,10 +62,6 @@ An Example Container with embedded numbers, and strings:
 It displays the daily goal and current percent progress made for the day. 
 
 ![list create](documentation/index.png)
-
-/date/slug - Slug version of home-screen. It displays the daily goal and current percent progress made for past or future days depending on the arrow press.
-
-![list create](documentation/slug.png)
 
 /addWater - Screen for adding water logs for a date.
 
@@ -102,17 +98,15 @@ It displays the daily goal and current percent progress made for the day.
 7. as a user, I can view my daily current and past progress based on my goal.
 8. as a user, I can view a graph plotting my water consumption per day over time. 
 
-## Research Topics
+## External Libraries
 
-* (5 points) Integrate user authentication
-    * I'm going to be using passport for user authentication
+* Integrate user authentication
+    * Uses passport for user authentication
     * User can have a way of accessing his/her own data store for water consumption
-* (2 points) Bootstrap
-    * Will use Bootstrap for a better and sleeker design. 
-* (1 point) Charts.js
+* Bootstrap
+    * Bootstrap for a better and sleeker design.
+* Charts.js
     * Allows creation of charts with an easy API. The chart graphs water consumption per day over time.
-
-8 points total out of 8 required points
 
 ## [Link to Initial Main Project File](app.js) 
 
