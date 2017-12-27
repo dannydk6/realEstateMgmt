@@ -18,58 +18,9 @@ router.get('/', (req, res) => {
 	if(req.user === undefined){
 		res.redirect('/login');
 	}else{
-		// We first must filter today's responses using today's date. 
-		// I'm not going to deal with time zones...
-		let todayDate = new Date();
-		const dateObj = {month: months[todayDate.getMonth()], 
-						day: +todayDate.getDate(), year: +todayDate.getFullYear()};
+		
 
-		// Use filter to get all of today's logs.
-		let todayLogs = req.user.logs.filter((logs) => {
-			return logs.date.month === dateObj.month &&
-				   logs.date.day === dateObj.day &&
-				   logs.date.year === dateObj.year;
-		});
-
-		// In settings, this is the unit to display.
-		const unit = req.user.preferences.preferredUnit;
-
-		console.log(unit);
-		// Reduce all of today's logs to a total
-		let todaySum = todayLogs.reduce((total, log) => {
-			console.log(convertUnit(unit,log));
-			return total + convertUnit(unit, log);
-
-		}, 0.0); 
-
-		if(unit === "L"){
-			todaySum = todaySum.toFixed(1);
-		}else{
-			todaySum = Math.round(todaySum);
-		}
-
-		// Round to whole numbers so it looks better (presentation wise)
-		// Get the percent goal to display for client.
-		percentGoal = Math.round((todaySum/req.user.preferences.dailyGoal)*100) + "";
-
-		let fillNum;
-		let message;
-
-
-		if(percentGoal === "0"){
-			fillNum = 0;
-		}else if(percentGoal.length > 2){
-			fillNum = 10;
-			message = "Good job making your goal today!"
-		}else{
-			fillNum = +percentGoal[0];
-		}
-
-
-		percentGoal += "%";
-
-		res.render('index', {todaySum: todaySum, percentGoal:percentGoal, 
-			todayLogs:todayLogs, fillNum:fillNum, message: message || ""});
+		res.render('index', {});
 	}
 
 });
