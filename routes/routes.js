@@ -4,8 +4,6 @@ const express = require('express'),
     mongoose = require('mongoose');
 
 const User = mongoose.model('User');
-const Log = mongoose.model('Log');
-const Container = mongoose.model('Container');
 
 let months = [0,1,2,3,4,5,6,7,8,9,10,11];
 
@@ -91,7 +89,7 @@ router.get('/addWater', (req, res) => {
 });
 
 router.post('/addWater', (req,res) => {
-	if(req.body.container !== "" && req.body.quantity !== ""){
+	//if(req.body.container !== "" && req.body.quantity !== ""){
 		const date = new Date();
 
 		const dateObj = {month: months[date.getMonth()], 
@@ -99,7 +97,7 @@ router.post('/addWater', (req,res) => {
 
 		dateObj.string = dateObj.month + "/" + dateObj.day + "/" + dateObj.year;
 
-		let newLog = new Log({container: req.body.container,
+		/*let newLog = new Log({container: req.body.container,
 			quantity: req.body.quantity, unit: req.body.unit, date: dateObj});
 
 		User.findOneAndUpdate({_id: req.user.id}, {$push: {logs: newLog} } ,
@@ -107,10 +105,11 @@ router.post('/addWater', (req,res) => {
 				console.log(err, newLog, count);
 				res.redirect('/');
 			});
-	}else{
+		*/
+	//}else{
 		console.log("You didn't input anything dude.");
 		res.redirect('/');
-	}
+	//}
 	
 });
 
@@ -139,7 +138,7 @@ router.get('/customBottle', function(req, res) {
 });
 
 router.post('/customBottle', function(req, res) {
-	if(req.body.container !== "" && req.body.quantity !== ""){
+	/*if(req.body.container !== "" && req.body.quantity !== ""){
 		
 		let newContainer = new Container({container: req.body.container,
 			quantity: req.body.quantity, unit: req.body.unit});
@@ -152,7 +151,8 @@ router.post('/customBottle', function(req, res) {
 	}else{
 		console.log("You didn't input anything dude.");
 		res.redirect('/');
-	}
+	}*/
+	res.redirect('/');
 });
 
 router.post('/preferences', (req,res) => {
