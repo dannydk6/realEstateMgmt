@@ -1,4 +1,4 @@
-require('./db');
+require('./database/db');
 require('./auth');
 
 const express = require('express');
