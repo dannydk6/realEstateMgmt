@@ -5,11 +5,6 @@ const express = require('express'),
 
 const User = mongoose.model('User');
 
-let months = [0,1,2,3,4,5,6,7,8,9,10,11];
-
-// Using higher ordered functions for mapping months to dates.
-months = months.map((word) => {return word + 1;});
-
 const monthNames = [ "January", "February", "March", "April", "May", "June",
 "July", "August", "September", "October", "November", "December" ];
 

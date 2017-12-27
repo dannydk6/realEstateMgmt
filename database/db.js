@@ -5,9 +5,74 @@ const URLSlugs = require('mongoose-url-slugs');
 
 mongoose.Promise = global.Promise;
 
+
+// Schema to use for HVAC, Roof, & Utility Services
+const Service = new mongoose.Schema({
+  system: String,
+  installed: Date,
+  // Company that serviced.
+  servicer: String,
+  // All maintenances made for service. 
+  // Can be used to get most recent maintenance
+  maintenance: [{date: Date, note: String}],
+  // link to service contract
+  contract: String
+});
+
+const Suite = new mongoose.Schema({
+  // Building of Suite
+  building: String,
+  // The floor of the suite
+  floor: String,
+  // Specific space on floor, like 100a, 100b
+  suite: String,
+  // Type: Retail, Office, Residential, Industrial
+  type: String,
+  gross_sqft: Number,
+  rentable_sqft: Number,
+  //submetered used to track electrical consumption
+  submetered: Boolean,
+  // status: vacant (default), occupied, under renovation
+  // Status changes automatically based on lease.
+  status: String,
+  // Image of floor plan
+  floor_plan: String
+
+
+});
+
 const Property = new mongoose.Schema({
-  name: String
-})
+  // Property Name
+  name: String,
+  // type: Office, Retail, Residential, Industrial.
+  type: String,
+  //Property Address
+  address: {street: String, city: String, st: String, zip: String},
+
+  // This includes the owner's name, state of incorporation, and company address.
+  owner: {name: String, st: String, 
+  address: {street: String, city: String, st: String, zip: String}},
+
+  // This is the owner's contact person for this property.
+  contact: {salutation: String, first_name: String, last_name: String, title: String},
+
+  // Which user is the manager for this property?
+  manager: { type: Schema.Types.ObjectId, ref: 'User' },
+
+  //Which user is the accountant?
+  accountant: { type: Schema.Types.ObjectId, ref: 'User' },
+
+  // Array of suites in a property.
+  suites: [Suite],
+
+  // Services for the property.
+  hvac: [Service],
+  roof: [Service],
+  utilities: [Service],
+
+  acuisition_docs: [{name: String, date: Date, document: String}]
+
+});
 
 // Users
 // * our site requires authentication...
@@ -31,6 +96,9 @@ const User = new mongoose.Schema({
   //Company Address
   address: {street: String, city: String, st: String, zip: String},
 
+  // Allows linking users to supervisor.
+  supervisor: {type: Schema.Types.ObjectId, ref: 'User'};
+
   // Array of properties for user to access. Only supervisor has array
   // of properties.
   properties: [Property]
@@ -43,6 +111,9 @@ User.plugin(URLSlugs('username __v'));
 
 // "register" database schemas so that database knows about them
 mongoose.model('User', User);
+mongoose.model('Property', Property);
+mongoose.model('Service', Service);
+mongoose.model('Suite', Suite);
 
 // Initialize string that will be passed to mongoose.connect
 // for connecting to the database.
