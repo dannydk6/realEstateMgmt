@@ -5,7 +5,6 @@ const URLSlugs = require('mongoose-url-slugs');
 
 mongoose.Promise = global.Promise;
 
-
 // Schema to use for HVAC, Roof, & Utility Services
 const Service = new mongoose.Schema({
   system: String,
@@ -37,8 +36,6 @@ const Suite = new mongoose.Schema({
   status: String,
   // Image of floor plan
   floor_plan: String
-
-
 });
 
 const Property = new mongoose.Schema({
@@ -48,7 +45,6 @@ const Property = new mongoose.Schema({
   type: String,
   //Property Address
   address: {street: String, city: String, st: String, zip: String},
-
   // This includes the owner's name, state of incorporation, and company address.
   owner: {name: String, st: String, 
   address: {street: String, city: String, st: String, zip: String}},
@@ -57,10 +53,10 @@ const Property = new mongoose.Schema({
   contact: {salutation: String, first_name: String, last_name: String, title: String},
 
   // Which user is the manager for this property?
-  manager: { type: Schema.Types.ObjectId, ref: 'User' },
+  manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   //Which user is the accountant?
-  accountant: { type: Schema.Types.ObjectId, ref: 'User' },
+  accountant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 
   // Array of suites in a property.
   suites: [Suite],
@@ -97,7 +93,7 @@ const User = new mongoose.Schema({
   address: {street: String, city: String, st: String, zip: String},
 
   // Allows linking users to supervisor.
-  supervisor: {type: Schema.Types.ObjectId, ref: 'User'};
+  supervisor: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
 
   // Array of properties for user to access. Only supervisor has array
   // of properties.
