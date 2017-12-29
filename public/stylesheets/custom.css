@@ -1,0 +1,46 @@
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+}
+
+
+.colorIt {
+	background-color: lightslategray;
+	height:100vh;
+
+}
+
+
+.colorIt:first-child {
+	background-color: gainsboro;
+}
+
+/* Keeps the columns' height inside wrapper equal to window height */
+.wrapper{
+	width: 100%;
+    overflow: auto;
+    background-color:red;
+    text-align: center;
+}
+
+
+
+
+@media (max-width: 575px) {
+	.colorIt {
+
+	}
+
+	.colorIt:first-child {
+
+	}	
+}
+
+textarea.battleText { 
+	margin-top: 1em;
+	resize: none; 
+}

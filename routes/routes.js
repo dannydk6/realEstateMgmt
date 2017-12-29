@@ -5,187 +5,142 @@ const express = require('express'),
 
 const User = mongoose.model('User');
 
-const monthNames = [ "January", "February", "March", "April", "May", "June",
-"July", "August", "September", "October", "November", "December" ];
-
+// The main page when users log in.
 router.get('/', (req, res) => {
-
-	if(req.user === undefined){
-		res.redirect('/login');
+	if(req.user !== undefined){
+		res.redirect('/home');
 	}else{
-		
-
-		res.render('index', {});
+		res.redirect('/login');
 	}
 
 });
 
-router.get('/addWater', (req, res) => {
-	if(req.user === undefined){
+// Home page for users.
+router.get('/home', (req, res) => {
+	if(req.user !== undefined){
+		res.render('user/home', { layout:"layouts/user", title: "Home"});
+	}else{
 		res.redirect('/login');
-	}else{
-		if(req.user.customBottles.length > 0){
-			res.render('addWater', {areBottles: 1});
-		}else{
-			res.render('addWater');
-		}
-		
-	}
-
-});
-
-router.post('/addWater', (req,res) => {
-	//if(req.body.container !== "" && req.body.quantity !== ""){
-		const date = new Date();
-
-		const dateObj = {month: months[date.getMonth()], 
-						day: +date.getDate(), year: +date.getFullYear()};
-
-		dateObj.string = dateObj.month + "/" + dateObj.day + "/" + dateObj.year;
-
-		/*let newLog = new Log({container: req.body.container,
-			quantity: req.body.quantity, unit: req.body.unit, date: dateObj});
-
-		User.findOneAndUpdate({_id: req.user.id}, {$push: {logs: newLog} } ,
-			function(err, img, count){
-				console.log(err, newLog, count);
-				res.redirect('/');
-			});
-		*/
-	//}else{
-		console.log("You didn't input anything dude.");
-		res.redirect('/');
-	//}
-	
-});
-
-router.get('/preferences', (req, res) => {
-	if(req.user === undefined){
-		res.redirect('/login');
-	}else{
-		res.render('preferences');
-	}
-});
-
-router.get('/history', (req, res) => {
-	if(req.user === undefined){
-		res.redirect('/login');
-	}else{
-		res.render('history');
-	}	
-});
-
-router.get('/customBottle', function(req, res) {
-	if(req.user === undefined){
-		res.redirect('/login');
-	}else{
-		res.render('customBottle');
-	}	
-});
-
-router.post('/customBottle', function(req, res) {
-	/*if(req.body.container !== "" && req.body.quantity !== ""){
-		
-		let newContainer = new Container({container: req.body.container,
-			quantity: req.body.quantity, unit: req.body.unit});
-
-		User.findOneAndUpdate({_id: req.user.id}, {$push: {customBottles: newContainer} } ,
-			function(err, newContainer, count){
-				console.log(err, newContainer, count);
-				res.redirect('/');
-			});
-	}else{
-		console.log("You didn't input anything dude.");
-		res.redirect('/');
-	}*/
-	res.redirect('/');
-});
-
-router.post('/preferences', (req,res) => {
-	if(req.body.goal !== ""){
-
-		User.findOneAndUpdate({_id: req.user.id}, 
-			{preferences: {preferredUnit: req.body.unit, dailyGoal: req.body.goal}} ,
-		function(err, newLog, count){
-			console.log(err, newLog, count);
-			res.redirect('/');
-		});
-	}else{
-		res.redirect('/');
 	}
 	
 });
 
-router.get('/history/graph', (req, res) => {
-	if(req.user === undefined){
-		res.redirect('/login');
+// All properties a user has.
+router.get('/properties', (req, res) => {
+	if(req.user !== undefined){
+		res.render('user/properties', { layout:"layouts/user", title: "Properties"});
 	}else{
+		res.redirect('/login');
+	}
+	
+});
 
-  		let quantDate = req.user.logs.map((log) => {return {quantity: log.quantity, unit: log.unit, date: log.date.string}});
+// All leases.
+router.get('/leases', (req, res) => {
+	if(req.user !== undefined){
+		res.render('user/leases', { layout:"layouts/user", title: "Leases"});
+	}else{
+		res.redirect('/login');
+	}
+	
+});
 
-  		let allDates = [];
+// All tenants.
+router.get('/tenants', (req, res) => {
+	if(req.user !== undefined){
+		res.render('user/tenants', { layout:"layouts/user", title: "Leases"});
+	}else{
+		res.redirect('/login');
+	}
+	
+});
 
-  		quantDate.forEach((log)=>{
-  			if(!foundInArray(log.date, allDates)){
-  				allDates.push({quantity: log.quantity, date: log.date});
-  			}else{
-  				allDates[indexForString(log.date, allDates)].quantity += Math.round(convertUnit(req.user.preferences.preferredUnit, log));
-  			}
-  		})
+// All tenants.
+router.get('/reports', (req, res) => {
+	if(req.user !== undefined){
+		res.render('user/reports', { layout:"layouts/user", title: "Leases"});
+	}else{
+		res.redirect('/login');
+	}
+	
+});
 
-		// Map the log quantities to an array.
-  		let allLogQuantities = allDates.map((log) => {return log.quantity;});
-
-  		// Map log dates.
-  		let allLogDates = allDates.map((log) => {return log.date;});
-
-		res.render('graph',{quantities:allLogQuantities, dates:allLogDates});
+// The main page when users log in.
+router.get('/login', (req, res) => {
+	// if the query string says there was a successful register, set up a message in login screen.
+	if(req.query.register){
+		const message = {strong: "Registration successful!", text:"Log in below.", style:"alert alert-success"};
+		res.render('ui/login', { title: 'Login',layout: 'layouts/ui', message: message});
+	}else{
+		// if no query string for register, then do a normal render.
+		res.render('ui/login', { title: 'Login',layout: 'layouts/ui'});
 	}
 });
 
-router.get('/login', function(req, res) {
-  res.render('login');
-});
-
+// Log a user in who is part of our user group.
 router.post('/login', function(req,res,next) {
   passport.authenticate('local', function(err,user) {
     if(user) {
-      req.logIn(user, function(err) {
-        res.redirect('/');
-      });
+    	req.logIn(user, function(err) {
+    		if(user.group === "admin"){
+    			//res.redirect('/admin/home');
+    			// Just send us all to home for now.
+    			res.redirect('/home');
+    		} else {
+    			res.redirect('/home');
+    		}
+    	});
     } else {
-      res.render('login', {message: 1});
+    	const message = {strong: "Oh no!", text:"User does not exist or password does not match.", style:"alert alert-danger"};
+    	res.render('ui/login', { title: 'Login',layout: 'layouts/ui', message: message});
     }
   })(req, res, next);
 });
 
-router.get('/signup', function(req, res) {
-  res.render('signup');
+// User registration page.
+router.get('/register', (req, res) => {
+	res.render('ui/register', { title: 'Registration', layout: 'layouts/ui' });
 });
 
-router.post('/signup', function(req, res) {
+// =====================================
+// Handle Registering new user =========
+// =====================================
+router.post('/register', (req,res) => {
 	if(req.body.password === req.body.password_confirmation && req.body.password !== ""){
 		User.find({email: req.body.email}, function(err, result){
 			if(result.length == 0){
-				User.register(new User({username:req.body.username, first_name: req.body.first_name,
-				last_name: req.body.last_name, email: req.body.email, preferences:{preferredUnit: "oz", dailyGoal: 60}}), 
-			    req.body.password, function(err, user){
-			    	if (err) {
-			      		res.render('signup',{message: "Your registration information is not valid."});
-			    	} else {
-			      		passport.authenticate('local')(req, res, function() {
-			        	res.redirect('/login');
-			      		});
-			    	}
-			  	});   
+				User.find({},function(err, result){
+					console.log(req.body.first_name);
+					User.register(new User({username:req.body.username, name: {first:req.body.first_name,
+					last: req.body.last_name}, email: req.body.email, company: req.body.company,
+					status: (process.env.GROUP || "admin"), joined: new Date()}), 
+				    req.body.password, function(err, user){
+				    	if (err) {
+				      		res.render('ui/register',{title: 'Registration',layout: 'layouts/ui', 
+				      			message: "Your registration information is not valid."});
+				    	} else {
+				      		passport.authenticate('local')(req, res, function() {
+				        		res.redirect('/login?register=success');
+				      		});
+				    	}
+				  	});
+				});
+   
 			}else{
-				res.render('signup',{message: "This email already exists."});
+				res.render('ui/register',{title: 'Registration',layout: 'layouts/ui', 
+					message: "This email already exists."});
 			}
 		});
 
 	}else{
-		res.render('signup',{message: "Your passwords did not match."});
+		res.render('ui/register',{title: 'Registration',layout: 'layouts/ui', 
+					message: "Your passwords did not match."});
 	}
+});
+
+// Go here to send an email if you forgot your password.
+router.get('/forgot-password', (req,res) => {
+	res.render('ui/forgot-password', { title: 'Forgot Password',layout: 'layouts/ui' });
 });
 
 // =====================================
@@ -195,56 +150,6 @@ router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/login');
 });
-
-function foundInArray(string, arr){
-	for(let i = 0; i < arr.length; i++){
-		if(arr[i].date === string){
-			return true;
-		}
-	}
-	return false;
-}
-
-function indexForString(string, arr){
-	for(let i = 0; i < arr.length; i++){
-		if(arr[i].date === string){
-			return i;
-		}
-	}
-}
-
-function convertUnit(unit, log){
-	if(unit === "oz"){
-		if(log.unit === unit){
-			return log.quantity;
-		}else if (log.unit == "mL"){
-			//Convert from mL to oz.
-			return (log.quantity*0.033814);
-		}else{ // oz to L
-			return (log.quantity*33.814);
-		}
-	}else if(unit === "mL"){
-		if(log.unit === unit){
-			// no conversion necessary
-			return log.quantity;
-		}else if (log.unit == "oz"){
-			//Convert from oz to mL.
-			return log.quantity*29.5735;
-		}else{ //  L to mL
-			return log.quantity*.001;
-		}
-	}else{ // preferred unit is L (only 3 choices)
-		if(log.unit === unit){
-			// no conversion necessary
-			return log.quantity;
-		}else if (log.unit == "oz"){
-			//Convert from oz to L.
-			return log.quantity*0.0295735;
-		}else{ //  mL to L.
-			return log.quantity*.001;
-		}
-	}	
-}
 
 // route handlers go above
 module.exports = router;

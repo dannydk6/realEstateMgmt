@@ -1,31 +1,36 @@
 {
-  "name": "realestatemgmt",
-  "version": "1.0.0",
-  "description": "## Overview",
+  "name": "remgt_v0.2",
+  "version": "0.2.0",
+  "description": "Software for managing real estate.",
+  "engines": {
+    "node": "8.9.1"
+  },
   "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
+    "connect-mongo": "^2.0.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.2",
     "express-session": "^1.15.6",
     "hbs": "^4.0.1",
-    "mongoose": "^4.13.7",
+    "mongoose": "^4.13.6",
     "mongoose-url-slugs": "^1.0.2",
+    "nodemailer": "^4.4.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "passport-local-mongoose": "^4.4.0"
+    "passport-local-mongoose": "^4.4.0",
+    "socket.io": "^2.0.4"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "request": "^2.81.0",
+    "tape": "^4.7.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dannydk6/realEstateMgmt.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dannydk6/realEstateMgmt/issues"
-  },
-  "homepage": "https://github.com/dannydk6/realEstateMgmt#readme"
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT"
 }

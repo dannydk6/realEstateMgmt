@@ -1,0 +1,20 @@
+{
+  "Default": { 
+  "type": "strike",
+  "mpCost": "2",
+  "accuracy": {"min": "1", "max": "6"},
+  "counter": {"min": "1", "max": "5"},
+  "dodge": {"min": "1", "max": "6"},
+  "counterHit": {"min": "1", "max": "3"},
+  "criticalHit": {"min": "1", "max": "3"},
+  "criticalChance": {"min": "1", "max": "9"},
+  "defaultText": "flops a dick at" },
+    
+  "Meditate":{
+  "type": "meditate",
+  "mpCost": "0",
+  "dodge": { "min": "1", "max": "9" },
+  "mpRegen": { "normal":"15", "high": "25", "low": "5" },
+  "defaultText": "calms down and counts sheep" } 
+  
+}

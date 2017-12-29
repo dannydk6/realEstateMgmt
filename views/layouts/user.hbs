@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ReMGT - {{title}}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template-->
+    <link href="/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
+
+</head>
+
+<body>
+    <header>
+        <!-- Top-left Logo -->
+        <a class="logo" href="/home">
+            <img id="topLeftLogo" src="/img/logo.png"  alt="ReMGT">
+        </a>
+        <nav id="top">
+            <a href="/home" style="margin-right:10px"><u>{{user.username}}</u></a>
+            <a href="/logout"><u>Sign Out</u></a>
+        </nav>
+        <!-- ./top-left-logo -->
+        
+        <nav id="bottom">
+            <a class="btn btn-primary" href="/leases" role="button">Leases</a>
+            &nbsp;
+            <a class="btn btn-primary" href="/properties" role="button">Properties</a>
+            &nbsp;
+            <a class="btn btn-primary" href="/tenants" role="button">Tenants</a>
+            &nbsp;
+            <a class="btn btn-primary" href="/reports" role="button">Reports</a>
+        </nav>
+    </header>
+<div class="wrapper">
+
+    {{{body}}}
+
+    
+
+</div>
+
+
+    <script type="text/javascript" src="/js/main.js"></script>
+</body>
+
+</html>

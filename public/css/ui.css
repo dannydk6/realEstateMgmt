@@ -1,0 +1,6 @@
+/* Handle columns that overlap in UI at smaller viewport sizes */
+@media (max-width: 767px) {
+	.bottomGutter{
+		margin-bottom:10px;
+	}
+}
