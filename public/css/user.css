@@ -1,7 +1,7 @@
 html, body, .wrapper {
     height: 100%;
-    min-width: 800px;
-    background-color: #D6ECFF 
+    min-width: 750px;
+    background-color: #D6ECFF;
 }
 
 body{
@@ -39,17 +39,16 @@ header {
 	align-items: center;
 	height: 90px;
 	width: 100%;
-	min-width: 800px;
+	min-width: 750px;
 	top:0;
 	z-index: 1;
 }
 
 .content {
-	width: 75%;
+	width: 70%;
 	height:100%;
 	background-color:white;
 	padding: 20px;
-
 	border-right:3px solid black;
 	border-top:3px solid black;
 	border-bottom:3px solid black;
@@ -58,7 +57,8 @@ header {
 
 .sidebar {
 	overflow-y: scroll;
-	width: 25%;
+	width: 30%;
+	min-width:300px;
 	max-height:100%;
 	border-left: 3px solid black;
 	border-right: 3px solid black;
@@ -95,6 +95,7 @@ a.logo{
 	padding-top: 7%;
 }
 .property{
+	cursor:pointer;
 	display:flex;
 	position:relative;
 	text-align: center;
@@ -106,4 +107,12 @@ a.logo{
 }
 
 .property:last-child{
+}
+
+.property:hover{
+	background-color: lightgrey;
+	-webkit-user-select: none; /* Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
 }
