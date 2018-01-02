@@ -5,7 +5,8 @@ html, body, .wrapper {
 }
 
 body{
-	height: calc(100% - 90px);
+	margin: 0;
+	height: calc(100vh - 90px);
 	padding: 0px;
 	font-family: sans-serif;
 }
@@ -15,6 +16,8 @@ body{
 }
 
 .wrapper {
+	margin:0;
+	padding:0;
 	position: relative;
 	display:flex;
 }
@@ -56,15 +59,18 @@ header {
 }
 
 .sidebar {
-	overflow-y: scroll;
 	width: 30%;
 	min-width:300px;
-	max-height:100%;
 	border-left: 3px solid black;
 	border-right: 3px solid black;
 	border-bottom: 3px solid black;
 }
 
+.filters{
+	display:flex;
+	flex-direction: column;
+	height: 50px;
+}
 
 #topLeftLogo{
 	width: 100%;
@@ -78,7 +84,7 @@ a.logo{
 	height:100%;
 	border:3px solid black;
 	justify-content: center;
-	background-color: white
+	background-color: white;
 }
 
 .input-group{
@@ -86,12 +92,18 @@ a.logo{
 	width:90%;
 }
 
+.properties{
+	border-top:3px solid black;
+	position:relative;
+	height:calc(100vh - 160px);
+	overflow-y: scroll;
+}
+
 .prop-name{
 	margin-right:20%;
 	padding-top: 7%;
 }
 .prop-field{
-
 	padding-top: 7%;
 }
 .property{
@@ -106,7 +118,12 @@ a.logo{
 	border-top:3px solid black;
 }
 
+.property:first-child{
+	border-top: none;
+}
+
 .property:last-child{
+	border-bottom:3px solid black;
 }
 
 .property:hover{
