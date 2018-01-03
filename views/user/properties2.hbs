@@ -86,5 +86,53 @@
     </div>
 </div>
 <div id="content">
-	Properties Template.  
+    <form id="newPropForm">
+      <div class="form-group">
+        <input type="text" class="form-control" id="propertyNameInput" placeholder="Enter Property Name">
+      </div>
+
+      <div id="form-divider">
+        <div id="form-headers">
+            <label id="addressHeader">Address:</label>
+            <label id="ownerHeader">Owner:</label>
+            <span>Owner</span>
+            <label id="ownerAddress">Address:</label>
+            <span>Owner</span>
+            <span>Contact:</span>         
+        </div> 
+        <div id="form-inputs">
+            <input type="text" class="form-control" id="streetInput" placeholder="Enter Street" name="prop-street">
+            <input type="text" class="form-control" id="cityInput" placeholder="Enter City" name="prop-city">
+            <input type="text" class="form-control" id="stateInput" placeholder="Enter State" name="prop-state">
+            <input type="text" class="form-control" id="zipInput" placeholder="Enter Zip Code" name="prop-zip">
+            <br>
+            <input type="text" class="form-control" id="landlordInput" placeholder="Enter Landlord" name="landlord-name">
+            <input type="text" class="form-control" id="landlordStateInput" placeholder="Enter Landlord State of Incorporation" name="landlord-state">
+            <br>
+            <input type="text" class="form-control" id="ownerStreetInput" placeholder="Enter Street" name="owner-street">
+            <input type="text" class="form-control" id="ownerCityInput" placeholder="Enter City" name="owner-city">
+            <input type="text" class="form-control" id="ownerStateInput" placeholder="Enter State" name="owner-state">
+            <input type="text" class="form-control" id="ownerZsipInput" placeholder="Enter Zip Code" name="owner-zip">  
+            <br>
+            <div id="radioSalutation">Select Salutation:</div> &nbsp;
+            <input type="radio" name="salutation" value="Ms."> Ms. &nbsp;
+            <input type="radio" name="salutation" value="Mr."> Mr. &nbsp;
+            <input type="radio" name="salutation" value="Dr."> Dr. &nbsp;
+            <input type="text" class="form-control" id="ownerCityInput" placeholder="Enter City" name="owner-city">
+            <input type="text" class="form-control" id="ownerStateInput" placeholder="Enter State" name="owner-state">
+            <input type="text" class="form-control" id="ownerZsipInput" placeholder="Enter Zip Code" name="owner-zip">  
+
+        </div>
+      </div>
+
+
+
+
+      <button type="submit" id="sendPropBtn" class="btn btn-primary">Create Property</button>
+    </form>
+    <div id="contentImages">
+        <div id="property-photo">
+            Add Property Photo
+        </div>
+    </div>
 </div>

@@ -97,7 +97,9 @@ const User = new mongoose.Schema({
 
   // Array of properties for user to access. Only supervisor has array
   // of properties.
-  properties: [Property]
+  properties: [Property],
+
+  preferences: {preferredField: String, sortConditions: String}
 
 });
 
