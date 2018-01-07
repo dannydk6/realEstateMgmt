@@ -1,6 +1,5 @@
 <div id="sidebar">
 
-
     <div class="filters">
       <div class="createBtn">
         <a href=""><u>+ Create New Property</u></a>
@@ -45,50 +44,12 @@
         	<span class="prop-field">Field #1</span>
         </div>
 
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-
-        <div class="property">
-            <span class="prop-name">Property #1</span>
-            <span class="prop-field">Field #1</span>
-        </div>
-
     </div>
 </div>
 <div id="content">
-    <form id="newPropForm">
+    <form id="newPropForm" method="POST" action="" enctype="multipart/form-data">
       <div class="form-group">
-        <input type="text" class="form-control" id="propertyNameInput" placeholder="Enter Property Name">
+        <input type="text" class="form-control" id="propertyNameInput" placeholder="Enter Property Name" name='prop-name'>
       </div>
 
       <div id="form-divider">
@@ -98,9 +59,13 @@
             <span>Owner</span>
             <label id="ownerAddress">Address:</label>
             <span>Owner</span>
-            <span>Contact:</span>         
+            <label id="ownerContact">Contact:</label>
+            <label id="propertyManager">Property Manager:</label>
+            <label id="propertyAccountant">Property Accountant:</label>
         </div> 
+
         <div id="form-inputs">
+            <input type="hidden" name='username' value='{{myUser.username}}'>
             <input type="text" class="form-control" id="streetInput" placeholder="Enter Street" name="prop-street">
             <input type="text" class="form-control" id="cityInput" placeholder="Enter City" name="prop-city">
             <input type="text" class="form-control" id="stateInput" placeholder="Enter State" name="prop-state">
@@ -118,21 +83,37 @@
             <input type="radio" name="salutation" value="Ms."> Ms. &nbsp;
             <input type="radio" name="salutation" value="Mr."> Mr. &nbsp;
             <input type="radio" name="salutation" value="Dr."> Dr. &nbsp;
-            <input type="text" class="form-control" id="ownerCityInput" placeholder="Enter City" name="owner-city">
-            <input type="text" class="form-control" id="ownerStateInput" placeholder="Enter State" name="owner-state">
-            <input type="text" class="form-control" id="ownerZsipInput" placeholder="Enter Zip Code" name="owner-zip">  
+            <input type="text" class="form-control" id="contactFirst" placeholder="Enter First Name" name="contact-first">
+            <input type="text" class="form-control" id="contactLast" placeholder="Enter Last Name" name="contact-last">
+            <input type="text" class="form-control" id="contactTitle" placeholder="Enter Title" name="contact-title">  
+            <br>
+            <select class="form-control" id="propManager" name='prop-manager'>
+              <option>John Doe</option>
+              <option>Sally Mae</option>
+              <option>Robby Robertson</option>
+            </select>
+            <br>
+            <select class="form-control" id="propAccountant" name="prop-accountant">
+              <option>John Doe</option>
+              <option>Sally Mae</option>
+              <option>Robby Robertson</option>
+            </select>  
+            <br> 
+            <div id="bottomOfContent"> 
+                <button type="submit" id="sendPropBtn" class="btn btn-primary" data-spy="affix">Create Property</button>
+            </div>
+            <br>
 
         </div>
       </div>
 
-
-
-
-      <button type="submit" id="sendPropBtn" class="btn btn-primary">Create Property</button>
+ 
     </form>
-    <div id="contentImages">
-        <div id="property-photo">
-            Add Property Photo
-        </div>
-    </div>
+      <!-- Div to house property Photo -->
+      <div id="property-photo">
+        Add Property Photo
+        <input type="file" id="getFile" accept="image/*" name="img-file"/>
+        <i class="fa fa-search" id="searchIcon"></i>
+      </div>    
+
 </div>

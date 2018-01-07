@@ -53,10 +53,14 @@ const Property = new mongoose.Schema({
   contact: {salutation: String, first_name: String, last_name: String, title: String},
 
   // Which user is the manager for this property?
-  manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  //manager: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  manager: String,
 
   //Which user is the accountant?
-  accountant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  //accountant: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  accountant: String,
+
+  propertyImage: String,
 
   // Array of suites in a property.
   suites: [Suite],

@@ -48,7 +48,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 // body parser setup
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 //Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -80,6 +81,10 @@ function accessUserData(req, res, next){
 // A router for all routes starting with '/'
 const baseRoutes = require('./routes/routes');
 app.use('/', baseRoutes);
+
+app.use(express.urlencoded({extended: false}));
+const api = require('./routes/api');
+app.use('/api', api);
 
 // Use this router for handling admin requests.
 const adminRoutes = require('./routes/admin');

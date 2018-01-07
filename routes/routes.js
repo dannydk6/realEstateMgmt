@@ -28,7 +28,7 @@ router.get('/home', (req, res) => {
 // All properties a user has.
 router.get('/properties', (req, res) => {
 	if(req.user !== undefined){
-		res.render('user/properties2', { layout:"layouts/user2", title: "Properties"});
+		res.render('user/properties2', { layout:"layouts/user2", title: "Properties", myUser: req.user});
 	}else{
 		res.redirect('/login');
 	}
