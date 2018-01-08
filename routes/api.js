@@ -78,10 +78,13 @@ router.post('/properties/create', (req, res) => {
 	//propertyImage: req.body['img-file']
 	});
 
-	console.log(req.body.username);
 	User.findOneAndUpdate({username: req.body.username}, {$push: {properties: newProperty} } ,
-	function(err, newProp, count){
-		console.log(err, newProp, count);
+	(err, newProp) => {
+		if(err){
+			return res.send(500, 'Error occurred: database error.'); 
+		}
+		console.log(err, newProp);
+		res.json({slug: newProp});
 	});
 
  });
