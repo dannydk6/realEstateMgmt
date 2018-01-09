@@ -41,6 +41,9 @@ const Suite = new mongoose.Schema({
 const Property = new mongoose.Schema({
   // Property Name
   name: String,
+
+  // Slug to search property
+  slug: String,
   // type: Office, Retail, Residential, Industrial.
   type: String,
   //Property Address
@@ -73,6 +76,7 @@ const Property = new mongoose.Schema({
   acuisition_docs: [{name: String, date: Date, document: String}]
 
 });
+
 
 // Users
 // * our site requires authentication...

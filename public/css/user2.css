@@ -122,6 +122,18 @@ a.logo{
 	margin-bottom:5px;
 }
 
+.propertySelected{
+	cursor:pointer;
+	display:flex;
+	position:relative;
+	text-align: center;
+	justify-content: center;
+	background-color: lightgreen;
+	height:70px;
+	border:3px solid black;
+	margin-bottom:5px;	
+}
+
 
 .property:first-child{
 }
@@ -198,7 +210,10 @@ select#soflow, select#soflow-color {
 
 }
 
-#content{
+/* contentRead and contentWrite are both used for 
+when reading and editing data for properties respectively */
+
+.contentWrite{
 	position:relative;
 	flex-grow: 1;
 	background-color:white;
@@ -210,6 +225,63 @@ select#soflow, select#soflow-color {
 	display:flex;
 	flex-direction: row;
 	overflow-y: scroll;
+}
+
+
+.contentRead{
+	position:relative;
+	flex-grow: 1;
+	background-color:white;
+	min-width: 600px;
+	min-height:400px;
+	padding:20px;
+	margin: 10px;
+	border:3px solid black;
+	display:flex;
+	flex-direction: column;
+	overflow-y: scroll;
+}
+
+.valuesRead{
+	margin-bottom:30px;
+	display:flex;
+	flex-direction: row;
+	height:100%;
+}
+
+.valuesWrite{
+	margin-bottom:20px;
+	display:flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.valsWrite{
+	height:100%;
+	flex-grow:1;
+}
+
+.headerRead{
+	margin-right: 10px;
+	width:150px;
+}
+
+.headerWrite{
+	margin-top: 5px;
+	margin-right: 10px;
+	width: 85px;
+	display:flex;
+}
+
+#infoRead{
+	display:flex;
+	flex-direction: column;
+}
+
+
+
+#propTitle{
+	margin-bottom: 20px;
 }
 
 #getFile{
@@ -246,14 +318,14 @@ select#soflow, select#soflow-color {
 }
 
 #propertyNameInput{
-	width:70%;
+	width:67%;
 }
 
 .form-control{
-	width: 70%;
+	width: 60%;
 	margin-bottom:5px;
 	min-width: 200px;
-
+	min-height:25px;
 }
 
 #form-divider{
@@ -294,6 +366,20 @@ select#soflow, select#soflow-color {
 	margin-bottom: 18px;
 }
 
+#editBtn{
+	position:absolute;
+	text-align: center;
+	right:20px;
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	width: 100px;
+	height:20px;
+	padding:20px;
+	border:3px solid black;
+	cursor: pointer;
+}
+
 #property-photo{
 	position:absolute;
 	text-align: center;
@@ -305,7 +391,14 @@ select#soflow, select#soflow-color {
 	height:125px;
 	padding:20px;
 	border:3px solid black;
+}
+
+.clickable{
 	cursor: pointer;
+}
+
+.edit{
+	top:100px;
 }
 
 @media (min-width: 1200px) { 
