@@ -8,7 +8,8 @@ const User = mongoose.model('User');
 // The main page when users log in.
 router.get('/', (req, res) => {
 	if(req.user !== undefined){
-		res.redirect('/home');
+		//TODO: Redirect back to home after i finish working on properties page.
+		res.redirect('/properties');
 	}else{
 		res.redirect('/login');
 	}

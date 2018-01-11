@@ -481,8 +481,8 @@ function main(evt){
 				propNameSort.classList.add('sorted');
 			}else{
 				[].slice.call(e).sort(function(a, b) {
-					aIndex = a.id.match(/\d$/)[0];
-					bIndex = b.id.match(/\d$/)[0];
+					aIndex = a.id.match(/\d*$/)[0];
+					bIndex = b.id.match(/\d*$/)[0];
 					return aIndex > bIndex;
 				}).forEach(function(val, index) {
 				sidebarProperties.appendChild(val);
