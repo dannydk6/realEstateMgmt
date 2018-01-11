@@ -46,6 +46,8 @@ router.post('/properties/create', (req, res) => {
 		}else{
 			mySlug = req.body['prop-name'].split(' ').join('-');
 		}
+
+		mySlug = mySlug.split('"').join('').split("'").join('');
 		const newProperty = new Property({
 		name: req.body['prop-name'],
 		address: {street: req.body['prop-street'], city: req.body['prop-city'],
@@ -57,7 +59,8 @@ router.post('/properties/create', (req, res) => {
 				  last_name: req.body['contact-last'], title: req.body['contact-title']},
 		manager: req.body['prop-manager'],
 		accountant: req.body['prop-accountant'],
-		slug: mySlug
+		slug: mySlug,
+		index: user[0].properties.length + 1
 		//propertyImage: req.body['img-file']
 		});
 
@@ -66,7 +69,7 @@ router.post('/properties/create', (req, res) => {
 			if(err){
 				return res.send(500, 'Error occurred: database error.'); 
 			}
-			res.json({slug: newProperty.slug});
+			res.json({slug: newProperty.slug, index: newProperty.index});
 		});	
 	});
 });

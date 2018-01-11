@@ -24,8 +24,14 @@ function main(evt){
 	console.log(createPropBtn);
 	createPropBtn.addEventListener('click', createNewProperty);
 
+	// This div wraps the overflow. Manipulate this div for getting to certain areas for scrolling.
+	const mainWrap = document.querySelector('#mainWrap');
 	//This div contains the main content on the page.
 	const contentDiv = document.querySelector('#content');
+
+	// This span is the property name sorting button.
+	const propNameSort = document.querySelector('#propSort');
+	propNameSort.addEventListener('click', sortPropertiesNames);
 
 	function createProperty(evt){
 		evt.preventDefault();
@@ -74,9 +80,13 @@ function main(evt){
 				newProperty.appendChild(propFieldSpan);
 				sidebarProps.appendChild(newProperty);
 				//Use slug as property id.
-				newProperty.id = JSON.parse(req.responseText).slug;
+				newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
 
 				newProperty.addEventListener('click', getProperty);
+
+				if(propNameSort.classList.contains('sorted')){
+					sortPropertiesNames();
+				}
 
 				// Also, we want to change all the form inputs now into text and scroll
 				// to top of content div.
@@ -344,7 +354,10 @@ function main(evt){
 		// Do an xmlhttprequest for the property
 		const req = new XMLHttpRequest();
 		let url = chooseURL('/api/properties?');
-		url += "slug=" + this.id;
+		//Get the slug from the id.
+		let slug = this.id.replace(/\d+$/, '').substr(0,this.id.length-2);
+		console.log(slug);
+		url += "slug=" + slug;
 		const username = document.querySelector('#username').value;
 		url += "&username=" + username;
 		console.log(url);
@@ -439,6 +452,7 @@ function main(evt){
 				valuesRead.appendChild(vals);
 
 				infoRead.appendChild(valuesRead);
+				mainWrap.scrollTop = 0;
 			});
 
 			
@@ -446,6 +460,36 @@ function main(evt){
 		req.send();
 		// Clear out the main content window.
 
+
+	}
+
+	function sortPropertiesNames(evt){
+		//Get the sidebar
+		const sidebarProperties = document.querySelector('#sidebarProperties');
+		// If there are no children, then don't do anything.
+		if(sidebarProperties.children.length < 2){
+			console.log("no children or only one, so don't sort");
+		}else{
+			let e = sidebarProperties.children;
+			if(!propNameSort.classList.contains('sorted')){
+				// Grab all the children, get their prop-names and ids and save them in array object.
+				[].slice.call(e).sort(function(a, b) {
+					return a.children[0].textContent.toLowerCase() > b.children[0].textContent.toLowerCase();
+				}).forEach(function(val, index) {
+				sidebarProperties.appendChild(val);
+				});
+				propNameSort.classList.add('sorted');
+			}else{
+				[].slice.call(e).sort(function(a, b) {
+					aIndex = a.id.match(/\d$/)[0];
+					bIndex = b.id.match(/\d$/)[0];
+					return aIndex > bIndex;
+				}).forEach(function(val, index) {
+				sidebarProperties.appendChild(val);
+				});
+				propNameSort.classList.remove('sorted');
+			}
+		}
 
 	}
 

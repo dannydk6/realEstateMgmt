@@ -73,7 +73,10 @@ const Property = new mongoose.Schema({
   roof: [Service],
   utilities: [Service],
 
-  acuisition_docs: [{name: String, date: Date, document: String}]
+  acuisition_docs: [{name: String, date: Date, document: String}],
+
+  //Index in the Properties Array. Use this for sorting.
+  index: Number
 
 });
 

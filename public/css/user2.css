@@ -6,7 +6,7 @@ body{
 	flex-direction: column;
 	font-family: sans-serif;
 	background-color: #D6ECFF;
-	min-height:500px;
+	min-height:350px;
 }
 
 html{
@@ -83,7 +83,7 @@ a.logo{
 
 #sidebar{
 	min-width:350px;
-	min-height:420px;
+	min-height:350px;
 	display:flex;
 	flex-direction: column;
 	background-color: #D6ECFF;;
@@ -104,21 +104,24 @@ a.logo{
 }
 
 .prop-name{
-	margin-right:20%;
-	padding-top: 7%;
+
+	flex:2;
 }
 .prop-field{
-	padding-top: 7%;
+
+	flex:1;
 }
 .property{
 	cursor:pointer;
 	display:flex;
 	position:relative;
 	text-align: center;
+	align-items: center;
 	justify-content: center;
 	background-color: white;
-	height:70px;
+	min-height:70px;
 	border:3px solid black;
+	padding:10px;
 	margin-bottom:5px;
 }
 
@@ -127,11 +130,13 @@ a.logo{
 	display:flex;
 	position:relative;
 	text-align: center;
+	align-items: center;
 	justify-content: center;
 	background-color: lightgreen;
-	height:70px;
+	min-height:70px;
 	border:3px solid black;
-	margin-bottom:5px;	
+	padding:10px;
+	margin-bottom:5px;
 }
 
 
@@ -213,37 +218,36 @@ select#soflow, select#soflow-color {
 /* contentRead and contentWrite are both used for 
 when reading and editing data for properties respectively */
 
-.contentWrite{
+#mainWrap{
 	position:relative;
 	flex-grow: 1;
 	background-color:white;
 	min-width: 600px;
-	min-height:400px;
+	min-height:350px;	
 	padding:20px;
 	margin: 10px;
 	border:3px solid black;
+	overflow-y: scroll;
+}
+
+.contentWrite{
 	display:flex;
 	flex-direction: row;
-	overflow-y: scroll;
+
+	width:100%;
 }
 
 
 .contentRead{
-	position:relative;
-	flex-grow: 1;
-	background-color:white;
-	min-width: 600px;
-	min-height:400px;
-	padding:20px;
-	margin: 10px;
-	border:3px solid black;
 	display:flex;
 	flex-direction: column;
-	overflow-y: scroll;
+
+	width:100%;
+
 }
 
 .valuesRead{
-	margin-bottom:30px;
+	margin-bottom:20px;
 	display:flex;
 	flex-direction: row;
 	height:100%;
@@ -282,6 +286,7 @@ when reading and editing data for properties respectively */
 
 #propTitle{
 	margin-bottom: 20px;
+	width:70%;
 }
 
 #getFile{

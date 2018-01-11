@@ -43,18 +43,17 @@
     <div class="properties" id="sidebarProperties">
         
         {{#each myUser.properties}}
-        <div class="property" id="{{slug}}">
+        <div class="property" id="{{slug}}_{{index}}">
           <span class="prop-name">{{name}}</span>
           <span class="prop-field">{{manager}}</span>
         </div>
         {{/each}}
-
     </div>
 </div>
-<div id="content" class="contentRead">
-    <h3>Welcome {{myUser.username}}</h3>
-    <p> Features include using the create new property button, and clicking on properties.</p>
-        
 
-
+<div id="mainWrap">
+  <div id="content" class="contentRead">
+      <h3>Welcome {{myUser.username}}</h3>
+      <p> Features include using the create new property button, and clicking on properties.</p>
+  </div>
 </div>
