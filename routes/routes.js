@@ -38,7 +38,7 @@ router.get('/properties', (req, res) => {
 // All leases.
 router.get('/leases', (req, res) => {
 	if(req.user !== undefined){
-		res.render('user/properties', { layout:"layouts/user2", title: "Leases", myUser: req.user});
+		res.render('user/leases', { layout:"layouts/user", title: "Leases", myUser: req.user});
 	}else{
 		res.redirect('/login');
 	}
