@@ -21,8 +21,30 @@ function main(evt){
 
 	// This is the button that adds a new property to the page.
 	const createPropBtn = document.querySelector('.createBtn')
-	console.log(createPropBtn);
 	createPropBtn.addEventListener('click', createNewProperty);
+
+	// There is a sendPropBtn on page start up only if the user has no properties.
+	// Add an event listener to sendPropBtn if it exists on the page.
+	const sendPropBtn = document.querySelector('#sendPropBtn');
+	if(sendPropBtn !== null){
+		sendPropBtn.addEventListener('click', createNewProperty);
+	}
+
+	// This is a button that allows uploading a file.
+	const getFileBtn = document.getElementById('getFile');
+	if(getFileBtn !== null){
+		getFileBtn.addEventListener('change', handleFileSelect, false);	
+	}
+
+	// The edit button appears for created properties. This one is the one that shows on initial screen load.
+	const editBtn = document.querySelector('#editBtn');
+	if(editBtn !== null){
+		editBtn.addEventListener('click', editProperty);
+		// If there is an edit button, we also know that the first property is selected
+		const sidebarProperties = document.querySelector('#sidebarProperties')
+								  .children[0].classList.add('propertySelected');
+	}
+
 
 	// This div wraps the overflow. Manipulate this div for getting to certain areas for scrolling.
 	const mainWrap = document.querySelector('#mainWrap');
@@ -104,6 +126,8 @@ function main(evt){
 
 				const sendPropBtn = document.querySelector('#sendPropBtn');
 
+				getProperty.call(newProperty);
+
 			};
 			
 			let params = createPostParams(formData);
@@ -126,7 +150,7 @@ function main(evt){
 		req.open('GET', url, true);
 		req.addEventListener('load', function() {
 		if (req.status >= 200 && req.status < 400){
-			console.log(req.responseText);
+
 			const data = JSON.parse(req.responseText);
 			const contentDiv = document.querySelector('#content');
 			removeAllChildren(contentDiv);
@@ -171,6 +195,9 @@ function main(evt){
 	        let username = document.querySelector('#username').value;
 	        formInputs.innerHTML = "<input type='hidden' name='username' value='" + username + "'>";
 
+	        // Add the slug to get property
+	        formInputs.innerHTML += "<input type='hidden' name='propSlug' value='" + data.slug + "'>";
+
 	        // Property Address Inputs
 	        formInputs.innerHTML += '<input type="text" class="form-control" id="streetInput"' + 
 	        	'placeholder="Enter Street" name="prop-street" value="' + data.address.street+'">' +
@@ -210,11 +237,11 @@ function main(evt){
 	            '<br><select class="form-control" id="propAccountant" name="prop-accountant">' +
 	            '<option>John Doe</option><option>Sally Mae</option><option>Robby Robertson</option>'+
 	            '</select><br><div id="bottomOfContent">' + 
-	            '<button id="sendPropBtn" class="btn btn-primary">Create Property</button></div><br>';
+	            '<button id="updatePropBtn" class="btn btn-primary">Update Property</button></div><br>';
 	        formDivider.appendChild(formInputs);
 			//Button at the end of creating new property that adds a property.
-			const sendPropBtn = document.querySelector('#sendPropBtn');
-			sendPropBtn.addEventListener('click', updateProperty);
+			const updatePropBtn = document.querySelector('#updatePropBtn');
+			updatePropBtn.addEventListener('click', updateProperty);
 
 			const propPhoto = document.createElement('div');
 			propPhoto.id = "property-photo";
@@ -346,17 +373,19 @@ function main(evt){
 
 		// Depending on which property is selected, we will deselect
 		// and select the appropriate property in the sidebar.
-		if(currSelection === null){
-			this.classList.add('propertySelected');
-			this.classList.remove('property');
-		}else if(currSelection.id !== this.id){
-			currSelection.classList.remove('propertySelected');
-			currSelection.classList.add('property');
-			this.classList.add('propertySelected');
-			this.classList.remove('property');
-		}else{
-			this.classList.remove('propertySelected');
-			this.classList.add('property');
+		if(evt !== undefined){
+			if(currSelection === null){
+				this.classList.add('propertySelected');
+				this.classList.remove('property');
+			}else if(currSelection.id !== this.id){
+				currSelection.classList.remove('propertySelected');
+				currSelection.classList.add('property');
+				this.classList.add('propertySelected');
+				this.classList.remove('property');
+			}else{
+				this.classList.remove('propertySelected');
+				this.classList.add('property');
+			}
 		}
 		// Do an xmlhttprequest for the property
 		const req = new XMLHttpRequest();
@@ -497,6 +526,10 @@ function main(evt){
 				document.querySelector('#' + prop.slug).children[1].textContent = prop.value;
 			})	
 
+			if(fieldSort.classList.contains('sorted')){
+				sortPropertiesField(undefined);
+			}
+
 
 
 			
@@ -548,17 +581,19 @@ function main(evt){
 			console.log("no children or only one, so don't sort");
 		}else{
 			let e = sidebarProperties.children;
-			if(!fieldSort.classList.contains('sorted')){
+			if(!fieldSort.classList.contains('sorted') || evt === undefined){
 				// Grab all the children, get their prop-names and ids and save them in array object.
 				[].slice.call(e).sort(function(a, b) {
 					return a.children[1].textContent.toLowerCase() > b.children[1].textContent.toLowerCase();
 				}).forEach(function(val, index) {
 				sidebarProperties.appendChild(val);
 				});
-				propNameSort.classList.remove('sorted');
-				propNameSort.children[0].classList.remove('highlighted');
-				fieldSort.classList.add('sorted');
-				fieldSort.children[0].classList.add('highlighted');
+				if(evt !== undefined){
+					propNameSort.classList.remove('sorted');
+					propNameSort.children[0].classList.remove('highlighted');
+					fieldSort.classList.add('sorted');
+					fieldSort.children[0].classList.add('highlighted');
+				}
 
 			}else{
 				[].slice.call(e).sort(function(a, b) {
@@ -575,6 +610,59 @@ function main(evt){
 			}
 		}
 
+	}
+
+	function updateProperty(evt){
+		evt.preventDefault();
+
+		const formData = new FormData(document.querySelector('#newPropForm'));
+
+		let propName = document.querySelector('#propertyNameInput').value;
+
+		// TODO: Have checks for data input and make popups if no input.
+		if(propName !== ""){
+			const req = new XMLHttpRequest();
+			
+			const url = chooseURL('/api/properties/update');
+			req.open('POST', url, true);
+			req.setRequestHeader('Content-Type', 
+				'application/x-www-form-urlencoded; charset=UTF-8');
+			
+			req.onload = function(){
+				//Useful code for changing window's url location after post.
+				//window.location = "/leases";
+				let data = JSON.parse(req.responseText);
+				console.log(data);
+		        let propName = document.querySelector('#propertyNameInput').value;
+
+				if(propNameSort.classList.contains('sorted')){
+					sortPropertiesNames();
+				}
+				let importantSlug = '';
+				for(let i = 0; i <sidebarProps.children.length; i++){
+					if (sidebarProps.children[i].classList.contains('propertySelected')){
+						importantSlug = sidebarProps.children[i].id;
+					}
+				}
+				console.log("Important Slug:" + importantSlug);
+				let currProp = document.querySelector('#' + importantSlug);
+				currProp.children[0].textContent = data['prop-name'];
+
+				let fieldParam = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
+				console.log(fieldParam);
+				let pairs = {manager: 'prop-manager', accountant: 'prop-accountant',
+							 contact: 'contact-first', owner: 'landlord-name'};
+				currProp.children[1].textContent = data[pairs[fieldParam]];
+
+				getProperty.call(currProp);
+
+
+
+			};
+			
+			let params = createPostParams(formData);
+			req.send(params);
+		}
 	}
 }
 
