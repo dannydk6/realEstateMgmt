@@ -26,11 +26,10 @@
         <div id="fields">
             &nbsp;
             <select id="soflow">
-            <option>Property Manager</option>
-            <option>Property Accountant</option>
-            <option>Field #3</option>
-            <option>Field #4</option>
-            <option>Field #5</option>
+            {{#each fields}}
+            <!-- Store the type and then slug -->
+            <option value="{{this.type}}" id="{{this.slug}}_mySlug">{{this.name}}</option>
+            {{/each}}
             </select>
             &nbsp;
             <span id="fieldSort"><i class="fa fa-sort" ></i></span>

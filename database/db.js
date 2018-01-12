@@ -76,7 +76,9 @@ const Property = new mongoose.Schema({
   acuisition_docs: [{name: String, date: Date, document: String}],
 
   //Index in the Properties Array. Use this for sorting.
-  index: Number
+  index: Number,
+  // This is the date the property was created on.
+  dateCreated: Date
 
 });
 

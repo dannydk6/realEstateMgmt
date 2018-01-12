@@ -5,6 +5,12 @@ const express = require('express'),
 
 const User = mongoose.model('User');
 
+const fields = [{name:"Property Manager", slug:"manager",type:"string"}, 
+				{name:"Property Accountant", slug:"accountant",type:"string"},
+				{name:"Owner Contact", slug:"contact",type:"contact"}, 
+				{name:"Owner",slug:"owner", type:"name"},
+				{name:"Property Type", slug:"type",type:"string"}];
+
 // The main page when users log in.
 router.get('/', (req, res) => {
 	if(req.user !== undefined){
@@ -29,7 +35,7 @@ router.get('/home', (req, res) => {
 // All properties a user has.
 router.get('/properties', (req, res) => {
 	if(req.user !== undefined){
-		res.render('user/properties2', { layout:"layouts/user2", title: "Properties", myUser: req.user});
+		res.render('user/properties2', { layout:"layouts/user2", title: "Properties", myUser: req.user, fields: fields});
 	}else{
 		res.redirect('/login');
 	}

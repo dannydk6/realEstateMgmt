@@ -82,7 +82,8 @@ a.logo{
 }
 
 #sidebar{
-	min-width:350px;
+	min-width:375px;
+	max-width: 375px;
 	min-height:350px;
 	display:flex;
 	flex-direction: column;
@@ -92,6 +93,10 @@ a.logo{
 .sorters{
 	display:flex;
 	font-size: 0.8rem;
+}
+
+.highlighted {
+	background-color: yellow;
 }
 
 

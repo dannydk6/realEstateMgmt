@@ -13,7 +13,6 @@ const User = mongoose.model('User');
 // since that's taken care of in app.js when
 // this routes file is loaded as middleware
 router.get('/properties', function(req, res) {
-	console.log(req.query);
 
 	User.find({slug: req.query.username}, (err, user) =>{
 		let prop = user[0].properties.find(x => x.slug === req.query.slug);
@@ -21,7 +20,39 @@ router.get('/properties', function(req, res) {
 		res.json(prop);
 	});
 
-	
+});
+
+// Use this route when we need a field from every single property
+router.get('/allProperties', function(req,res) {
+
+	User.find({slug: req.query.username}, (err,user)=>{
+		let myResponse = [];
+		if(req.query.type === "string"){
+			user[0].properties.forEach((property)=>{
+				myResponse.push({slug: property.slug + "_" + property.index, value: property[req.query.slug]});
+			});
+			res.json(myResponse);
+		//This is when we want the owner name.			
+		}else if(req.query.type === "name"){
+			user[0].properties.forEach((property)=>{
+				myResponse.push({slug: property.slug + "_" + property.index, value: property.owner.name});
+			});
+			res.json(myResponse);	
+		}else if(req.query.type === "contact"){
+			user[0].properties.forEach((property)=>{
+				myResponse.push({slug: property.slug + "_" + property.index, 
+				value: property.contact.salutation + " " + property.contact.first_name + " " +
+				property.contact.last_name});
+			});
+			res.json(myResponse);	
+		}else{
+			// This lets you know there is no correct type sent.
+			res.json({});
+		}
+
+
+
+	}); 
 });
 
 
@@ -47,7 +78,9 @@ router.post('/properties/create', (req, res) => {
 			mySlug = req.body['prop-name'].split(' ').join('-');
 		}
 
-		mySlug = mySlug.split('"').join('').split("'").join('');
+		mySlug = mySlug.split('"').join('').split("'").join('').split('(').join('');
+		mySlug = mySlug.split('<').join('').split('>').join('').split('.').join('');
+		mySlug = mySlug.split(')').join('').split('/').join('').split("\/").join('');
 		const newProperty = new Property({
 		name: req.body['prop-name'],
 		address: {street: req.body['prop-street'], city: req.body['prop-city'],
@@ -60,7 +93,8 @@ router.post('/properties/create', (req, res) => {
 		manager: req.body['prop-manager'],
 		accountant: req.body['prop-accountant'],
 		slug: mySlug,
-		index: user[0].properties.length + 1
+		index: user[0].properties.length + 1,
+		dateCreated: new Date()
 		//propertyImage: req.body['img-file']
 		});
 

@@ -33,6 +33,13 @@ function main(evt){
 	const propNameSort = document.querySelector('#propSort');
 	propNameSort.addEventListener('click', sortPropertiesNames);
 
+	const fieldSort = document.querySelector('#fieldSort');
+	fieldSort.addEventListener('click', sortPropertiesField);
+
+	// This select dropdown is used for choosing parameters in sidebar.
+	const fieldsBox = document.querySelector('#soflow');
+	fieldsBox.addEventListener('change', getAllProperties);
+
 	function createProperty(evt){
 		evt.preventDefault();
 
@@ -458,9 +465,43 @@ function main(evt){
 			
 		} });
 		req.send();
-		// Clear out the main content window.
+
+		// TODO: Clear out the main content window.
 
 
+	}
+
+	// Use this to update sidebar text values after user changes fields dropdown menu option.
+	function getAllProperties(evt){
+		// Do an xmlhttprequest for the property
+		const req = new XMLHttpRequest();
+		let url = chooseURL('/api/allProperties?');
+		//Get the slug from the id.
+		let slug = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
+		console.log(slug);
+		url += "slug=" + slug;
+		const username = document.querySelector('#username').value;
+		url += "&username=" + username;
+		url += "&type=" + fieldsBox.options[fieldsBox.selectedIndex].value;
+		console.log(url);
+
+		req.open('GET', url, true);
+		req.addEventListener('load', function() {
+		if (req.status >= 200 && req.status < 400){
+			// if there was a successful request, 
+			// Load the page with database info for 
+			// that property.
+			const data = JSON.parse(req.responseText);	
+
+			data.forEach((prop) =>{
+				document.querySelector('#' + prop.slug).children[1].textContent = prop.value;
+			})	
+
+
+
+			
+		} });
+		req.send();
 	}
 
 	function sortPropertiesNames(evt){
@@ -479,6 +520,9 @@ function main(evt){
 				sidebarProperties.appendChild(val);
 				});
 				propNameSort.classList.add('sorted');
+				propNameSort.children[0].classList.add('highlighted');
+				fieldSort.classList.remove('sorted');
+				fieldSort.children[0].classList.remove('highlighted');
 			}else{
 				[].slice.call(e).sort(function(a, b) {
 					aIndex = a.id.match(/\d*$/)[0];
@@ -488,11 +532,50 @@ function main(evt){
 				sidebarProperties.appendChild(val);
 				});
 				propNameSort.classList.remove('sorted');
+				propNameSort.children[0].classList.remove('highlighted');
+				fieldSort.children[0].classList.remove('highlighted');
+				fieldSort.classList.remove('sorted');
 			}
 		}
 
 	}
 
+	function sortPropertiesField(evt){
+		//Get the sidebar
+		const sidebarProperties = document.querySelector('#sidebarProperties');
+		// If there are no children, then don't do anything.
+		if(sidebarProperties.children.length < 2){
+			console.log("no children or only one, so don't sort");
+		}else{
+			let e = sidebarProperties.children;
+			if(!fieldSort.classList.contains('sorted')){
+				// Grab all the children, get their prop-names and ids and save them in array object.
+				[].slice.call(e).sort(function(a, b) {
+					return a.children[1].textContent.toLowerCase() > b.children[1].textContent.toLowerCase();
+				}).forEach(function(val, index) {
+				sidebarProperties.appendChild(val);
+				});
+				propNameSort.classList.remove('sorted');
+				propNameSort.children[0].classList.remove('highlighted');
+				fieldSort.classList.add('sorted');
+				fieldSort.children[0].classList.add('highlighted');
+
+			}else{
+				[].slice.call(e).sort(function(a, b) {
+					aIndex = a.id.match(/\d*$/)[0];
+					bIndex = b.id.match(/\d*$/)[0];
+					return aIndex > bIndex;
+				}).forEach(function(val, index) {
+				sidebarProperties.appendChild(val);
+				});
+				propNameSort.classList.remove('sorted');
+				propNameSort.children[0].classList.remove('highlighted');
+				fieldSort.classList.remove('sorted');
+				fieldSort.children[0].classList.remove('highlighted');
+			}
+		}
+
+	}
 }
 
 // Get all the params and values from the form data and put them into a string.
