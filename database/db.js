@@ -14,7 +14,7 @@ const Service = new mongoose.Schema({
   // All maintenances made for service. 
   // Can be used to get most recent maintenance
   maintenance: [{date: Date, note: String}],
-  // link to service contract
+  // link to service contractx
   contract: String
 });
 

@@ -90,6 +90,10 @@ a.logo{
 	background-color: #D6ECFF;;
 }
 
+#updatePropBtn {
+	margin-right: 30px;
+}
+
 .sorters{
 	display:flex;
 	font-size: 0.8rem;

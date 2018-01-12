@@ -126,6 +126,7 @@ function main(evt){
 
 				const sendPropBtn = document.querySelector('#sendPropBtn');
 
+				newProperty.classList.add('propertySelected');
 				getProperty.call(newProperty);
 
 			};
@@ -232,16 +233,60 @@ function main(evt){
 	            '<input type="text" class="form-control" id="contactLast" placeholder="Enter Last Name" name="contact-last" value="'+data.contact.last_name+'">'+
 	            '<input type="text" class="form-control" id="contactTitle" placeholder="Enter Title" name="contact-title" value="'+data.contact.title+'"><br>';
 	        
-	        formInputs.innerHTML += '<select class="form-control" id="propManager" name="prop-manager">'+
-	            '<option>John Doe</option><option>Sally Mae</option><option>Robby Robertson</option></select>'+
-	            '<br><select class="form-control" id="propAccountant" name="prop-accountant">' +
-	            '<option>John Doe</option><option>Sally Mae</option><option>Robby Robertson</option>'+
-	            '</select><br><div id="bottomOfContent">' + 
-	            '<button id="updatePropBtn" class="btn btn-primary">Update Property</button></div><br>';
+	        // Handle managers. Show selected as the manager matching the list of managers for account.
+	        // In this version, use this preset managers array.
+	        const managers = ["John Doe", "Sally Mae", "Robby Robertson"];
+
+	        //formInputs.innerHTML += '<select class="form-control" id="propManager" name="prop-manager">';
+	        const managerSelect = document.createElement('select');
+	        managerSelect.id = 'propManager';
+	        managerSelect.name = 'prop-manager';
+	        managerSelect.classList.add('form-control');
+	        for(let i = 0; i < managers.length; i++){
+	        	if(managers[i] === data.manager){
+	        		managerSelect.innerHTML += '<option selected>' + managers[i] + '</option>';
+	        	}else{
+	        		managerSelect.innerHTML += '<option>' + managers[i] + '</option>';
+	        	}
+	        }
+
+	        formInputs.appendChild(managerSelect);
+
+	        // Work with prop accountants now too.
+	        formInputs.innerHTML += '<br>';
+	        //'<select class="form-control" id="propAccountant" name="prop-accountant">'
+
+	        
+	        // Right now manager options are the same as accountants.
+
+	        const acctSelect = document.createElement('select');
+	        acctSelect.id = 'propAccountant';
+	        acctSelect.name = 'prop-accountant';
+	        acctSelect.classList.add('form-control');
+	        for(let i = 0; i < managers.length; i++){
+	        	if(managers[i] === data.accountant){
+	        		acctSelect.innerHTML += '<option selected>' + managers[i] + '</option>';
+	        	}else{
+	        		acctSelect.innerHTML += '<option>' + managers[i] + '</option>';
+	        	}
+	        }
+
+	        formInputs.appendChild(acctSelect);
+
+
+	        formInputs.innerHTML += '<br><div id="bottomOfContent">' + 
+	        '<button id="updatePropBtn" class="btn btn-primary">Update Property</button>' +
+	        '<button id="deletePropBtn" class="btn btn-danger">Delete Property</button></div><br>';
+
 	        formDivider.appendChild(formInputs);
-			//Button at the end of creating new property that adds a property.
+
+			//Button at the end of creating new property that updates a property.
 			const updatePropBtn = document.querySelector('#updatePropBtn');
 			updatePropBtn.addEventListener('click', updateProperty);
+
+			//Button at the end of creating new property that deletes a property.
+			const deletePropBtn = document.querySelector('#deletePropBtn');
+			deletePropBtn.addEventListener('click', deleteProperty);
 
 			const propPhoto = document.createElement('div');
 			propPhoto.id = "property-photo";
@@ -664,6 +709,55 @@ function main(evt){
 			req.send(params);
 		}
 	}
+
+	// Use this function to delete an unwanted property
+	function deleteProperty(evt){
+		evt.preventDefault();
+
+		const formData = new FormData(document.querySelector('#newPropForm'));
+
+		// TODO: Have checks for data input and make popups if no input.
+		if(true){
+			const req = new XMLHttpRequest();
+			
+			const url = chooseURL('/api/properties/delete');
+			req.open('POST', url, true);
+			req.setRequestHeader('Content-Type', 
+				'application/x-www-form-urlencoded; charset=UTF-8');
+			
+			req.onload = function(){
+				//Useful code for changing window's url location after post.
+				//window.location = "/leases";
+				let data = JSON.parse(req.responseText);
+				console.log(data);
+		        let propName = document.querySelector('#propertyNameInput').value;
+
+				let importantSlug = '';
+				for(let i = 0; i <sidebarProps.children.length; i++){
+					if (sidebarProps.children[i].classList.contains('propertySelected')){
+						importantSlug = sidebarProps.children[i].id;
+					}
+				}
+
+				let currProp = document.querySelector('#' + importantSlug);
+				sidebarProps.removeChild(currProp);
+
+				removeAllChildren(contentDiv);
+
+				if(sidebarProps.children.length > 1){
+					sidebarProps.children[0].classList.add('propertySelected');
+					getProperty.call(sidebarProps.children[0]);
+				}
+
+
+
+			};
+			
+			let params = createPostParams(formData);
+			req.send(params);
+		}
+	}
+
 }
 
 // Get all the params and values from the form data and put them into a string.

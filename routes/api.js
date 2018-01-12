@@ -133,6 +133,19 @@ router.post('/properties/update', (req, res) => {
 	});
 });
 
+//Delete Property
+router.post('/properties/delete', (req, res) => {
+
+	User.findOneAndUpdate({slug: req.body.username},
+				{$pull: {"properties": {slug: req.body.propSlug}}}, 
+		(err, property) => {
+		//Run through all properties and find
+		// there exists a property with this slug.
+		// Update that property with this info.
+
+		res.json({'message': 'deleted item'});
+	});
+});
 
 
 
