@@ -818,7 +818,7 @@ function main(evt){
 				hiddenInput.value = imgPath;
 
 				document.querySelector('#form-inputs').appendChild(hiddenInput);
-				console.log(document.querySelector('#form-inputs'));
+				console.log('Update prop: ' + document.querySelector('#form-inputs'));
 
 				formData = new FormData(document.querySelector('#newPropForm'));
 
