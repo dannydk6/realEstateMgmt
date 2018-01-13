@@ -1,6 +1,28 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const multer = require('multer');
+
+router.post('/properties/img/upload', multer({ dest: './public/img/uploads/'}).single('img-file'), function(req,res){
+	console.log(req.body); //form fields
+	/* example output:
+	{ title: 'abc' }
+	 */
+	console.log(req.file); //form files
+	/* example output:
+            { fieldname: 'img-file',
+              originalname: 'grumpy.png',
+              encoding: '7bit',
+              mimetype: 'image/png',
+              destination: './uploads/',
+              filename: '436ec561793aa4dc475a88e84776b1b9',
+              path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
+              size: 277056 }
+	 */
+	//const ext = req.file.mimetype.replace('image/', '.');
+	const actualPath = req.file.path.replace(/public/, '');
+	res.json({path:actualPath});
+});
 
 // Bring in mongoose model, Place, to represent a restaurant
 const Property = mongoose.model('Property');
@@ -99,7 +121,8 @@ router.post('/properties/create', (req, res) => {
 		accountant: req.body['prop-accountant'],
 		slug: mySlug,
 		index: user[0].properties.length + 1,
-		dateCreated: new Date()
+		dateCreated: new Date(),
+		propertyImage: req.body['img-url']
 		//propertyImage: req.body['img-file']
 		});
 
@@ -127,7 +150,8 @@ router.post('/properties/update', (req, res) => {
 				first_name: req.body['contact-first'],last_name: req.body['contact-last'], 
 				title: req.body['contact-title']},
 				"properties.$.manager": req.body['prop-manager'],
-				"properties.$.accountant": req.body['prop-accountant']
+				"properties.$.accountant": req.body['prop-accountant'],
+				"properties.$.propertyImage": req.body['img-url']
 			}}, 
 		(err, property) => {
 		//Run through all properties and find

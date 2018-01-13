@@ -33,7 +33,7 @@ function main(evt){
 	// Add an event listener to sendPropBtn if it exists on the page.
 	const sendPropBtn = document.querySelector('#sendPropBtn');
 	if(sendPropBtn !== null){
-		sendPropBtn.addEventListener('click', createNewProperty);
+		sendPropBtn.addEventListener('click', createProperty);
 	}
 
 	// This is a button that allows uploading a file.
@@ -71,85 +71,199 @@ function main(evt){
 	function createProperty(evt){
 		evt.preventDefault();
 
-		const formData = new FormData(document.querySelector('#newPropForm'));
+		let formData = new FormData(document.querySelector('#newPropForm'));
 
 		let propName = document.querySelector('#propertyNameInput').value;
 
-		// TODO: Have checks for data input and make popups if no input.
-		if(propName !== ""){
-			const req = new XMLHttpRequest();
-			
-			const url = chooseURL('/api/properties/create');
-			req.open('POST', url, true);
-			req.setRequestHeader('Content-Type', 
-				'application/x-www-form-urlencoded; charset=UTF-8');
-			
-			req.onload = function(){
-				//Useful code for changing window's url location after post.
-				//window.location = "/leases";
+		// This is for img file upload
+		const imgFile = document.querySelector('#getFile');
+		// If there is no img file, avoid upload process.
+		if(imgFile.value !== '' && propName !== ''){
+			const imgForm = document.createElement('form');
+			imgForm.name = "img-upload";
+			const imgFileCopy = imgFile.cloneNode(true);
+			imgForm.appendChild(imgFileCopy);
 
-				// After we have posted the new property, add a div to sidebar.
-				// Give it an event listener so that when it's clicked, we 
-				// issue an xmlhttprequest for the property it is associated with.
-				/*
-			        <div class="property" id={{slug}}>
-			        	<span class="prop-name">Property #1</span>
-			        	<span class="prop-field">Field #1</span>
-			        </div>	
-		        */		
-		        const sidebarProps = document.querySelector('#sidebarProperties');
-		        let propName = document.querySelector('#propertyNameInput').value;
+			const imgFormData = new FormData(imgForm);
+			console.log(imgFormData);
 
-		        const fieldSelected = fieldsBox.options[fieldsBox.selectedIndex].textContent;
-		        console.log(fieldSelected);
-		        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
-		        				 {value: 'Owner', id: '#landlordInput'},
-		        				 {value: 'Property Manager', id: '#propManager'},
-		        				 {value: 'Property Accountant', id: '#propAccountant'},
-		        				 {value: 'Property Type', id: ''}];
-		        //Do this for the selected value
-		        const currId = mapping.find(o => o.value === fieldSelected).id;
-		        let propField = document.querySelector(currId).value;
+			const imgReq = new XMLHttpRequest();
 
-				let newProperty = document.createElement('div');
-				newProperty.classList.add('property');
-				let propNameSpan = document.createElement('span');
-				propNameSpan.classList.add('prop-name');
-				propNameSpan.textContent = propName;
-				let propFieldSpan = document.createElement('span');
-				propFieldSpan.classList.add('prop-field');
-				propFieldSpan.textContent = propField;
+			const url = chooseURL('/api/properties/img/upload');
+			imgReq.open('POST', url, true);
+			imgReq.onload = function(){
 
-				newProperty.appendChild(propNameSpan);
-				newProperty.appendChild(propFieldSpan);
-				sidebarProps.appendChild(newProperty);
-				//Use slug as property id.
-				newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
+				let imgPath = JSON.parse(imgReq.responseText).path;
+				let imgUrl = chooseURL(imgPath);
+				console.log(imgUrl);
+				hiddenInput = document.createElement('input');
+				hiddenInput.name = 'img-url';
+				hiddenInput.type = 'hidden';
+				hiddenInput.value = imgPath;
 
-				newProperty.addEventListener('click', getProperty);
+				document.querySelector('#form-inputs').appendChild(hiddenInput);
+				console.log(document.querySelector('#form-inputs'));
 
-				if(propNameSort.classList.contains('sorted')){
-					sortPropertiesNames();
-				}
+				formData = new FormData(document.querySelector('#newPropForm'));
 
-				// Also, we want to change all the form inputs now into text and scroll
-				// to top of content div.
-				//Button at the end of creating new property that adds a property.
+				// TODO: Have checks for data input and make popups if no input.
+				if(propName !== ""){
+					const req = new XMLHttpRequest();
+					
+					const url = chooseURL('/api/properties/create');
+					req.open('POST', url, true);
+					req.setRequestHeader('Content-Type', 
+						'application/x-www-form-urlencoded; charset=UTF-8');
 
-				//Main content div
-				const contentDiv = document.querySelector('#content');
+					
+					req.onload = function(){
+						//Useful code for changing window's url location after post.
+						//window.location = "/leases";
 
-				const sendPropBtn = document.querySelector('#sendPropBtn');
+						// After we have posted the new property, add a div to sidebar.
+						// Give it an event listener so that when it's clicked, we 
+						// issue an xmlhttprequest for the property it is associated with.
+						/*
+					        <div class="property" id={{slug}}>
+					        	<span class="prop-name">Property #1</span>
+					        	<span class="prop-field">Field #1</span>
+					        </div>	
+				        */		
+				        const sidebarProps = document.querySelector('#sidebarProperties');
+				        let propName = document.querySelector('#propertyNameInput').value;
 
-				newProperty.classList.add('propertySelected');
-				getProperty.call(newProperty);
+				        const fieldSelected = fieldsBox.options[fieldsBox.selectedIndex].textContent;
+				        console.log(fieldSelected);
+				        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
+				        				 {value: 'Owner', id: '#landlordInput'},
+				        				 {value: 'Property Manager', id: '#propManager'},
+				        				 {value: 'Property Accountant', id: '#propAccountant'},
+				        				 {value: 'Property Type', id: ''}];
+				        //Do this for the selected value
+				        const currId = mapping.find(o => o.value === fieldSelected).id;
+				        let propField = document.querySelector(currId).value;
 
-			};
-			
-			let params = createPostParams(formData);
-			req.send(params);
+						let newProperty = document.createElement('div');
+						newProperty.classList.add('property');
+						let propNameSpan = document.createElement('span');
+						propNameSpan.classList.add('prop-name');
+						propNameSpan.textContent = propName;
+						let propFieldSpan = document.createElement('span');
+						propFieldSpan.classList.add('prop-field');
+						propFieldSpan.textContent = propField;
 
-		}		
+						newProperty.appendChild(propNameSpan);
+						newProperty.appendChild(propFieldSpan);
+						sidebarProps.appendChild(newProperty);
+						//Use slug as property id.
+						newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
+
+						newProperty.addEventListener('click', getProperty);
+
+						if(propNameSort.classList.contains('sorted')){
+							sortPropertiesNames();
+						}
+
+						// Also, we want to change all the form inputs now into text and scroll
+						// to top of content div.
+						//Button at the end of creating new property that adds a property.
+
+						//Main content div
+						const contentDiv = document.querySelector('#content');
+
+						const sendPropBtn = document.querySelector('#sendPropBtn');
+
+						newProperty.classList.add('propertySelected');
+						getProperty.call(newProperty);
+
+					};
+					
+					let params = createPostParams(formData);
+					req.send(params);
+
+				}		
+			}
+			imgReq.send(imgFormData);
+
+		}else{
+			let propName = document.querySelector('#propertyNameInput').value;
+
+			// TODO: Have checks for data input and make popups if no input.
+			if(propName !== ""){
+				const req = new XMLHttpRequest();
+				
+				const url = chooseURL('/api/properties/create');
+				req.open('POST', url, true);
+				req.setRequestHeader('Content-Type', 
+					'application/x-www-form-urlencoded; charset=UTF-8');
+				
+				req.onload = function(){
+					//Useful code for changing window's url location after post.
+					//window.location = "/leases";
+
+					// After we have posted the new property, add a div to sidebar.
+					// Give it an event listener so that when it's clicked, we 
+					// issue an xmlhttprequest for the property it is associated with.
+					/*
+				        <div class="property" id={{slug}}>
+				        	<span class="prop-name">Property #1</span>
+				        	<span class="prop-field">Field #1</span>
+				        </div>	
+			        */		
+			        const sidebarProps = document.querySelector('#sidebarProperties');
+			        let propName = document.querySelector('#propertyNameInput').value;
+
+			        const fieldSelected = fieldsBox.options[fieldsBox.selectedIndex].textContent;
+			        console.log(fieldSelected);
+			        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
+			        				 {value: 'Owner', id: '#landlordInput'},
+			        				 {value: 'Property Manager', id: '#propManager'},
+			        				 {value: 'Property Accountant', id: '#propAccountant'},
+			        				 {value: 'Property Type', id: ''}];
+			        //Do this for the selected value
+			        const currId = mapping.find(o => o.value === fieldSelected).id;
+			        let propField = document.querySelector(currId).value;
+
+					let newProperty = document.createElement('div');
+					newProperty.classList.add('property');
+					let propNameSpan = document.createElement('span');
+					propNameSpan.classList.add('prop-name');
+					propNameSpan.textContent = propName;
+					let propFieldSpan = document.createElement('span');
+					propFieldSpan.classList.add('prop-field');
+					propFieldSpan.textContent = propField;
+
+					newProperty.appendChild(propNameSpan);
+					newProperty.appendChild(propFieldSpan);
+					sidebarProps.appendChild(newProperty);
+					//Use slug as property id.
+					newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
+
+					newProperty.addEventListener('click', getProperty);
+
+					if(propNameSort.classList.contains('sorted')){
+						sortPropertiesNames();
+					}
+
+					// Also, we want to change all the form inputs now into text and scroll
+					// to top of content div.
+					//Button at the end of creating new property that adds a property.
+
+					//Main content div
+					const contentDiv = document.querySelector('#content');
+
+					const sendPropBtn = document.querySelector('#sendPropBtn');
+
+					newProperty.classList.add('propertySelected');
+					getProperty.call(newProperty);
+
+				};
+				
+				let params = createPostParams(formData);
+				req.send(params);
+
+			}		
+		}
 	}
 
 	// This function controls what happens when a property is edited.
@@ -308,7 +422,9 @@ function main(evt){
 			propPhoto.classList.add('clickable');
 			propPhoto.innerHTML = 'Add Property Photo' +
 	        '<input type="file" id="getFile" accept="image/*" name="img-file"/>' +
-	        '<i class="fa fa-search" id="searchIcon"></i>';
+	        '<i class="fa fa-search" id="searchIcon"></i>'+
+	        '<img src="' + chooseURL(data.propertyImage) + 
+			'" id="propImg" class="propImg">';;
 
 	        contentDiv.appendChild(propPhoto);
 
@@ -412,6 +528,8 @@ function main(evt){
 		const sendPropBtn = document.querySelector('#sendPropBtn');
 		sendPropBtn.addEventListener('click', createProperty);
 
+
+
 		const propPhoto = document.createElement('div');
 		propPhoto.id = "property-photo";
 		propPhoto.classList.add('clickable');
@@ -470,6 +588,8 @@ function main(evt){
 			const propertyPhoto = document.createElement('div');
 			propertyPhoto.id = "property-photo";
 			propertyPhoto.classList.add('edit');
+			propertyPhoto.innerHTML = '<img src="' + chooseURL(data.propertyImage) + 
+			'" id="propImg" class="propImg">';
 
 			const editBtn = document.createElement('div');
 
@@ -666,54 +786,138 @@ function main(evt){
 	function updateProperty(evt){
 		evt.preventDefault();
 
-		const formData = new FormData(document.querySelector('#newPropForm'));
+		let formData = new FormData(document.querySelector('#newPropForm'));
 
 		let propName = document.querySelector('#propertyNameInput').value;
 
-		// TODO: Have checks for data input and make popups if no input.
-		if(propName !== ""){
-			const req = new XMLHttpRequest();
-			
-			const url = chooseURL('/api/properties/update');
-			req.open('POST', url, true);
-			req.setRequestHeader('Content-Type', 
-				'application/x-www-form-urlencoded; charset=UTF-8');
-			
-			req.onload = function(){
-				//Useful code for changing window's url location after post.
-				//window.location = "/leases";
-				let data = JSON.parse(req.responseText);
-				console.log(data);
-		        let propName = document.querySelector('#propertyNameInput').value;
 
-				if(propNameSort.classList.contains('sorted')){
-					sortPropertiesNames();
-				}
-				let importantSlug = '';
-				for(let i = 0; i <sidebarProps.children.length; i++){
-					if (sidebarProps.children[i].classList.contains('propertySelected')){
-						importantSlug = sidebarProps.children[i].id;
+		// This is for img file upload. This will reupload an image on every single edit so change that soon.
+		const imgFile = document.querySelector('#getFile');
+		// If there is no img file, avoid upload process.
+		if(imgFile.value !== '' && propName !== ''){
+			const imgForm = document.createElement('form');
+			imgForm.name = "img-upload";
+			const imgFileCopy = imgFile.cloneNode(true);
+			imgForm.appendChild(imgFileCopy);
+
+			const imgFormData = new FormData(imgForm);
+			console.log(imgFormData);
+
+			const imgReq = new XMLHttpRequest();
+
+			const url = chooseURL('/api/properties/img/upload');
+			imgReq.open('POST', url, true);
+			imgReq.onload = function(){
+
+				let imgPath = JSON.parse(imgReq.responseText).path;
+				let imgUrl = chooseURL(imgPath);
+				console.log(imgUrl);
+				hiddenInput = document.createElement('input');
+				hiddenInput.name = 'img-url';
+				hiddenInput.type = 'hidden';
+				hiddenInput.value = imgPath;
+
+				document.querySelector('#form-inputs').appendChild(hiddenInput);
+				console.log(document.querySelector('#form-inputs'));
+
+				formData = new FormData(document.querySelector('#newPropForm'));
+
+				// TODO: Have checks for data input and make popups if no input.
+				if(propName !== ""){
+					const req = new XMLHttpRequest();
+					
+					const url = chooseURL('/api/properties/update');
+					req.open('POST', url, true);
+					req.setRequestHeader('Content-Type', 
+						'application/x-www-form-urlencoded; charset=UTF-8');
+
+					
+					req.onload = function(){
+						//Useful code for changing window's url location after post.
+						//window.location = "/leases";
+						let data = JSON.parse(req.responseText);
+						console.log(data);
+				        let propName = document.querySelector('#propertyNameInput').value;
+
+						if(propNameSort.classList.contains('sorted')){
+							sortPropertiesNames();
+						}
+						let importantSlug = '';
+						for(let i = 0; i <sidebarProps.children.length; i++){
+							if (sidebarProps.children[i].classList.contains('propertySelected')){
+								importantSlug = sidebarProps.children[i].id;
+							}
+						}
+						console.log("Important Slug:" + importantSlug);
+						let currProp = document.querySelector('#' + importantSlug);
+						currProp.children[0].textContent = data['prop-name'];
+
+						let fieldParam = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
+						console.log(fieldParam);
+						let pairs = {manager: 'prop-manager', accountant: 'prop-accountant',
+									 contact: 'contact-first', owner: 'landlord-name'};
+						currProp.children[1].textContent = data[pairs[fieldParam]];
+
+						getProperty.call(currProp);
+
+					};
+					
+					let params = createPostParams(formData);
+					req.send(params);
+
+				}		
+			}
+			imgReq.send(imgFormData);
+
+		}else{
+			let propName = document.querySelector('#propertyNameInput').value;
+
+			// TODO: Have checks for data input and make popups if no input.
+			// TODO: Have checks for data input and make popups if no input.
+			if(propName !== ""){
+				const req = new XMLHttpRequest();
+				
+				const url = chooseURL('/api/properties/update');
+				req.open('POST', url, true);
+				req.setRequestHeader('Content-Type', 
+					'application/x-www-form-urlencoded; charset=UTF-8');
+				
+				req.onload = function(){
+					//Useful code for changing window's url location after post.
+					//window.location = "/leases";
+					let data = JSON.parse(req.responseText);
+					console.log(data);
+			        let propName = document.querySelector('#propertyNameInput').value;
+
+					if(propNameSort.classList.contains('sorted')){
+						sortPropertiesNames();
 					}
-				}
-				console.log("Important Slug:" + importantSlug);
-				let currProp = document.querySelector('#' + importantSlug);
-				currProp.children[0].textContent = data['prop-name'];
+					let importantSlug = '';
+					for(let i = 0; i <sidebarProps.children.length; i++){
+						if (sidebarProps.children[i].classList.contains('propertySelected')){
+							importantSlug = sidebarProps.children[i].id;
+						}
+					}
+					console.log("Important Slug:" + importantSlug);
+					let currProp = document.querySelector('#' + importantSlug);
+					currProp.children[0].textContent = data['prop-name'];
 
-				let fieldParam = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
-				console.log(fieldParam);
-				let pairs = {manager: 'prop-manager', accountant: 'prop-accountant',
-							 contact: 'contact-first', owner: 'landlord-name'};
-				currProp.children[1].textContent = data[pairs[fieldParam]];
+					let fieldParam = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
+					console.log(fieldParam);
+					let pairs = {manager: 'prop-manager', accountant: 'prop-accountant',
+								 contact: 'contact-first', owner: 'landlord-name'};
+					currProp.children[1].textContent = data[pairs[fieldParam]];
 
-				getProperty.call(currProp);
+					getProperty.call(currProp);
 
 
 
-			};
-			
-			let params = createPostParams(formData);
-			req.send(params);
-		}
+				};
+				
+				let params = createPostParams(formData);
+				req.send(params);
+			}	
+		}		
 	}
 
 	// Use this function to delete an unwanted property
@@ -789,6 +993,7 @@ function createPostParams(formData){
 		pair2clean = pair[1].toString().split(" ").join("%20");
 		parameters = parameters + pair[0] + "=" + pair2clean + "&";
 	}
+	console.log(parameters);
 	return parameters.substr(0, parameters.length-1);
 }
 
