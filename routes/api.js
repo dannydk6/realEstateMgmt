@@ -81,6 +81,11 @@ router.post('/properties/create', (req, res) => {
 		mySlug = mySlug.split('"').join('').split("'").join('').split('(').join('');
 		mySlug = mySlug.split('<').join('').split('>').join('').split('.').join('');
 		mySlug = mySlug.split(')').join('').split('/').join('').split("\/").join('');
+		mySlug = mySlug.split('#').join('').split('&').join('').split(';').join('');
+		if (!isNaN(mySlug.charAt(0))){
+			tmp = mySlug;
+			mySlug = "num" + tmp;
+		}
 		const newProperty = new Property({
 		name: req.body['prop-name'],
 		address: {street: req.body['prop-street'], city: req.body['prop-city'],
@@ -133,17 +138,36 @@ router.post('/properties/update', (req, res) => {
 	});
 });
 
-//Delete Property
+// Delete Property
+// Update all property indices and send them to page
 router.post('/properties/delete', (req, res) => {
+	// TODO: Do something about slugs that will now be screwed if there are duplicates.
+	// Basically check for all duplicates and then edit them.
 
 	User.findOneAndUpdate({slug: req.body.username},
-				{$pull: {"properties": {slug: req.body.propSlug}}}, 
-		(err, property) => {
-		//Run through all properties and find
-		// there exists a property with this slug.
-		// Update that property with this info.
+		{$pull: {"properties": {slug: req.body.propSlug}}}, 
+		(err, user) => {
 
-		res.json({'message': 'deleted item'});
+		let myIndex = user.properties.find(o => o.slug === req.body.propSlug).index - 1;
+		console.log('\n\n\nThis my index: ' + myIndex);
+		newProperties = user.properties;
+		console.log(newProperties);
+		if(myIndex < newProperties.length - 1){
+			for(let i = myIndex; i < newProperties.length; i++){
+				newProperties[i].index -= 1;
+			}
+		}
+		newProperties.splice(myIndex, 1);
+		console.log('new props')
+		console.log(newProperties);
+
+
+		User.findOneAndUpdate({slug:req.body.username},
+			{$set: {"properties": newProperties}},
+			(err,user)=>{
+				res.json({'message': 'deleted item'});
+		});
+
 	});
 });
 

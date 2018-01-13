@@ -13,6 +13,12 @@ function removeAllChildren(node){
 }
 
 function main(evt){
+	// These are all the headers and their corresponding key values in database
+	const headers = [["address","Address:", "address" ], ["owner","Owner:", "object", "name"], 
+	["owner","Owner Address:","address"],["contact","Owner Contact:", "contact"], ["type","Property Type:", "string"], 
+	["manager","Property Manager:", "string"], ["accountant","Property Accountant:","string"],
+	["occupancy", "Occupancy:", "string"]];
+
 	// TODO: Add event listeners for each property after load.
 	const sidebarProps = document.querySelector('#sidebarProperties');
 	for(let i = 0; i < sidebarProps.children.length; i++){
@@ -93,8 +99,17 @@ function main(evt){
 		        */		
 		        const sidebarProps = document.querySelector('#sidebarProperties');
 		        let propName = document.querySelector('#propertyNameInput').value;
-		        //let propField = document.querySelector('#soflow').value;
-		        let propField = document.querySelector('#propManager').value;
+
+		        const fieldSelected = fieldsBox.options[fieldsBox.selectedIndex].textContent;
+		        console.log(fieldSelected);
+		        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
+		        				 {value: 'Owner', id: '#landlordInput'},
+		        				 {value: 'Property Manager', id: '#propManager'},
+		        				 {value: 'Property Accountant', id: '#propAccountant'},
+		        				 {value: 'Property Type', id: ''}];
+		        //Do this for the selected value
+		        const currId = mapping.find(o => o.value === fieldSelected).id;
+		        let propField = document.querySelector(currId).value;
 
 				let newProperty = document.createElement('div');
 				newProperty.classList.add('property');
@@ -427,16 +442,13 @@ function main(evt){
 				currSelection.classList.add('property');
 				this.classList.add('propertySelected');
 				this.classList.remove('property');
-			}else{
-				this.classList.remove('propertySelected');
-				this.classList.add('property');
 			}
 		}
 		// Do an xmlhttprequest for the property
 		const req = new XMLHttpRequest();
 		let url = chooseURL('/api/properties?');
 		//Get the slug from the id.
-		let slug = this.id.replace(/\d+$/, '').substr(0,this.id.length-2);
+		let slug = this.id.replace(/_\d*$/, '').substr(0,this.id.length-2);
 		console.log(slug);
 		url += "slug=" + slug;
 		const username = document.querySelector('#username').value;
@@ -481,12 +493,6 @@ function main(evt){
 			infoRead.id = "infoRead";
 
 			contentDiv.appendChild(infoRead);
-
-			// These are all the headers and their corresponding key values in database
-			const headers = [["address","Address:", "address" ], ["owner","Owner:", "object", "name"], 
-			["owner","Owner Address:","address"],["contact","Owner Contact:", "contact"], ["type","Property Type:", "string"], 
-			["manager","Property Manager:", "string"], ["accountant","Property Accountant:","string"],
-			["occupancy", "Occupancy:", "string"]];
 
 			// For each header, create a valuesRead Div, headersRead Div,
 			// and vals for the values. If its an address, change formatting.
@@ -729,7 +735,6 @@ function main(evt){
 				//Useful code for changing window's url location after post.
 				//window.location = "/leases";
 				let data = JSON.parse(req.responseText);
-				console.log(data);
 		        let propName = document.querySelector('#propertyNameInput').value;
 
 				let importantSlug = '';
@@ -738,6 +743,23 @@ function main(evt){
 						importantSlug = sidebarProps.children[i].id;
 					}
 				}
+
+				importantIndex = +importantSlug.match(/\d*$/)[0];
+				console.log('This is important: ' + importantIndex)
+
+				if(importantIndex < sidebarProps.children.length){
+					[].slice.call(sidebarProps.children).forEach((property) =>{
+						let myIndex = +property.id.match(/\d*$/)[0];
+						console.log(myIndex);
+
+						if(myIndex > importantIndex){
+							myIndex -= 1;
+							property.id = property.id.replace(/\d*$/,myIndex);
+						}
+
+					});					
+				}
+
 
 				let currProp = document.querySelector('#' + importantSlug);
 				sidebarProps.removeChild(currProp);
