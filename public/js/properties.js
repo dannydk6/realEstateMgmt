@@ -38,10 +38,16 @@ function main(evt){
 
 	// This is a button that allows uploading a file.
 	const getFileBtn = document.getElementById('getFile');
+	// We know there is a create page up if there is a getFileBtn
 	if(getFileBtn !== null){
 		getFileBtn.addEventListener('change', handleFileSelect, false);	
 	}
 
+	const showProp = document.querySelector('#showProp');
+	if(showProp !== null){
+		sidebarProperties.children[0].classList.add('propertySelected');
+		getProperty.call(sidebarProperties.children[0]);
+	}
 	// The edit button appears for created properties. This one is the one that shows on initial screen load.
 	const editBtn = document.querySelector('#editBtn');
 	if(editBtn !== null){
@@ -67,6 +73,8 @@ function main(evt){
 	// This select dropdown is used for choosing parameters in sidebar.
 	const fieldsBox = document.querySelector('#soflow');
 	fieldsBox.addEventListener('change', getAllProperties);
+
+
 
 	function createProperty(evt){
 		evt.preventDefault();
@@ -422,9 +430,13 @@ function main(evt){
 			propPhoto.classList.add('clickable');
 			propPhoto.innerHTML = 'Add Property Photo' +
 	        '<input type="file" id="getFile" accept="image/*" name="img-file"/>' +
-	        '<i class="fa fa-search" id="searchIcon"></i>'+
-	        '<img src="' + chooseURL(data.propertyImage) + 
-			'" id="propImg" class="propImg">';;
+	        '<i class="fa fa-search" id="searchIcon"></i>';
+
+	        if(data.propertyImage !== ''){
+	        	propPhoto.innerHTML += '<img src="' + chooseURL(data.propertyImage) + 
+				'" id="propImg" class="propImg">';;
+	        }
+	        
 
 	        contentDiv.appendChild(propPhoto);
 
