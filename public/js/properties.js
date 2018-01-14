@@ -588,8 +588,11 @@ function main(evt){
 			const propertyPhoto = document.createElement('div');
 			propertyPhoto.id = "property-photo";
 			propertyPhoto.classList.add('edit');
-			propertyPhoto.innerHTML = '<img src="' + chooseURL(data.propertyImage) + 
-			'" id="propImg" class="propImg">';
+			if(data.propertyImage !== ''){
+				propertyPhoto.innerHTML = '<img src="' + chooseURL(data.propertyImage) + 
+				'" id="propImg" class="propImg"></img>';
+			}
+			
 
 			const editBtn = document.createElement('div');
 
@@ -782,7 +785,7 @@ function main(evt){
 		}
 
 	}
-
+	//TODO: Fix the bug with picture
 	function updateProperty(evt){
 		evt.preventDefault();
 
@@ -793,6 +796,7 @@ function main(evt){
 
 		// This is for img file upload. This will reupload an image on every single edit so change that soon.
 		const imgFile = document.querySelector('#getFile');
+		console.log(imgFile);
 		// If there is no img file, avoid upload process.
 		if(imgFile.value !== '' && propName !== ''){
 			const imgForm = document.createElement('form');

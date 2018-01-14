@@ -151,7 +151,7 @@ router.post('/properties/update', (req, res) => {
 				title: req.body['contact-title']},
 				"properties.$.manager": req.body['prop-manager'],
 				"properties.$.accountant": req.body['prop-accountant'],
-				"properties.$.propertyImage": req.body['img-url']
+				"properties.$.propertyImage": req.body['img-url'] || ''
 			}}, 
 		(err, property) => {
 		//Run through all properties and find
