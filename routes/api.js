@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
 
+// Upload images to server. In the future, upload files to amazon server rather than heroku.
 router.post('/properties/img/upload', multer({ dest: './public/img/uploads/'}).single('img-file'), function(req,res){
 	console.log(req.body); //form fields
 	/* example output:
@@ -138,28 +139,51 @@ router.post('/properties/create', (req, res) => {
 
 //Update any new properties
 router.post('/properties/update', (req, res) => {
+	console.log('Image url: ' + req.body['img-url']);
+	if(req.body['img-url'] !== undefined){
+		User.findOneAndUpdate({slug: req.body.username, "properties.slug": req.body.propSlug},
+					{$set: {"properties.$.name": req.body['prop-name'],
+					"properties.$.address": {street: req.body['prop-street'], city: req.body['prop-city'],
+					  st: req.body['prop-state'], zip: req.body['prop-zip']},
+					"properties.$.owner": {name: req.body['landlord-name'], st: req.body['landlord-state'],
+					address: {street: req.body['owner-street'], city: req.body['owner-city'],
+					  st: req.body['owner-state'], zip: req.body['owner-zip']} },
+					"properties.$.contact": {salutation: req.body['salutation']||'', 
+					first_name: req.body['contact-first'],last_name: req.body['contact-last'], 
+					title: req.body['contact-title']},
+					"properties.$.manager": req.body['prop-manager'],
+					"properties.$.accountant": req.body['prop-accountant'],
+					"properties.$.propertyImage": req.body['img-url'] || ''
+				}}, 
+			(err, property) => {
+			//Run through all properties and find
+			// there exists a property with this slug.
+			// Update that property with this info.
 
-	User.findOneAndUpdate({slug: req.body.username, "properties.slug": req.body.propSlug},
-				{$set: {"properties.$.name": req.body['prop-name'],
-				"properties.$.address": {street: req.body['prop-street'], city: req.body['prop-city'],
-				  st: req.body['prop-state'], zip: req.body['prop-zip']},
-				"properties.$.owner": {name: req.body['landlord-name'], st: req.body['landlord-state'],
-				address: {street: req.body['owner-street'], city: req.body['owner-city'],
-				  st: req.body['owner-state'], zip: req.body['owner-zip']} },
-				"properties.$.contact": {salutation: req.body['salutation']||'', 
-				first_name: req.body['contact-first'],last_name: req.body['contact-last'], 
-				title: req.body['contact-title']},
-				"properties.$.manager": req.body['prop-manager'],
-				"properties.$.accountant": req.body['prop-accountant'],
-				"properties.$.propertyImage": req.body['img-url'] || ''
-			}}, 
-		(err, property) => {
-		//Run through all properties and find
-		// there exists a property with this slug.
-		// Update that property with this info.
+			res.json(req.body);
+		});
+	}else{
+		User.findOneAndUpdate({slug: req.body.username, "properties.slug": req.body.propSlug},
+					{$set: {"properties.$.name": req.body['prop-name'],
+					"properties.$.address": {street: req.body['prop-street'], city: req.body['prop-city'],
+					  st: req.body['prop-state'], zip: req.body['prop-zip']},
+					"properties.$.owner": {name: req.body['landlord-name'], st: req.body['landlord-state'],
+					address: {street: req.body['owner-street'], city: req.body['owner-city'],
+					  st: req.body['owner-state'], zip: req.body['owner-zip']} },
+					"properties.$.contact": {salutation: req.body['salutation']||'', 
+					first_name: req.body['contact-first'],last_name: req.body['contact-last'], 
+					title: req.body['contact-title']},
+					"properties.$.manager": req.body['prop-manager'],
+					"properties.$.accountant": req.body['prop-accountant']
+				}}, 
+			(err, property) => {
+			//Run through all properties and find
+			// there exists a property with this slug.
+			// Update that property with this info.
 
-		res.json(req.body);
-	});
+			res.json(req.body);
+		});		
+	}
 });
 
 // Delete Property
