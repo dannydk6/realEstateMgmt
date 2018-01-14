@@ -600,7 +600,7 @@ function main(evt){
 			const propertyPhoto = document.createElement('div');
 			propertyPhoto.id = "property-photo";
 			propertyPhoto.classList.add('edit');
-			if(data.propertyImage !== ''){
+			if(data.propertyImage !== '' && data.propertyImage !== undefined){
 				propertyPhoto.innerHTML = '<img src="' + chooseURL(data.propertyImage) + 
 				'" id="propImg" class="propImg"></img>';
 			}
