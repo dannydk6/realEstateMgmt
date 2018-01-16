@@ -55,7 +55,7 @@ function main(evt){
 		sidebarProperties.children[0].classList.add('propertySelected');
 		getProperty.call(sidebarProperties.children[0]);
 	}else{
-		//createNewProperty();
+		createNewProperty();
 	}
 	// The edit button appears for created properties. This one is the one that shows on initial screen load.
 	const editBtn = document.querySelector('#editBtn');
