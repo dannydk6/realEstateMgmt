@@ -16,6 +16,7 @@ html{
 
 * {
 	box-sizing: border-box;
+
 }
 
 nav#top {
@@ -121,6 +122,15 @@ a.logo{
 	flex:1;
 }
 .property{
+	position:relative;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	min-height:70px;
+	margin-bottom:5px;
+}
+
+.propertyMain{
 	cursor:pointer;
 	display:flex;
 	position:relative;
@@ -129,25 +139,29 @@ a.logo{
 	justify-content: center;
 	background-color: white;
 	min-height:70px;
+	min-width:100%;
 	border:3px solid black;
 	padding:10px;
-	margin-bottom:5px;
 }
 
+
 .propertySelected{
-	cursor:pointer;
-	display:flex;
 	position:relative;
 	text-align: center;
 	align-items: center;
 	justify-content: center;
 	background-color: lightgreen;
 	min-height:70px;
-	border:3px solid black;
-	padding:10px;
 	margin-bottom:5px;
 }
 
+.propertySelected > .propertyMain{
+	background-color: lightgreen;
+}
+
+.propertySelected > .propertyMain:hover{
+	background-color: lightgreen;
+}
 
 .property:first-child{
 }
@@ -156,13 +170,19 @@ a.logo{
 	margin-bottom: 0;
 }
 
-.property:hover{
+.propertySelected:last-child{
+	margin-bottom:0;
+}
+
+.property > .propertyMain:hover{
 	background-color: lightgrey;
 	-webkit-user-select: none; /* Safari */        
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* IE10+/Edge */
 	user-select: none; /* Standard */
 }
+
+
 
 .wrap {
 	height:100vh;
@@ -256,7 +276,7 @@ when reading and editing data for properties respectively */
 }
 
 .valuesRead{
-	margin-bottom:20px;
+	margin-bottom:15px;
 	display:flex;
 	flex-direction: row;
 	height:100%;
@@ -270,13 +290,20 @@ when reading and editing data for properties respectively */
 }
 
 .valsWrite{
-	height:100%;
 	flex-grow:1;
 }
 
 .headerRead{
 	margin-right: 10px;
 	width:150px;
+}
+
+.addBuildingBtn{
+
+}
+
+#createBuildBtn{
+	margin-top:20px;
 }
 
 .headerWrite{
@@ -291,7 +318,54 @@ when reading and editing data for properties respectively */
 	flex-direction: column;
 }
 
+.headerAddBuild{
+	min-width:100px;
+	margin-right: 10px;
+	margin-top: 5px;
+	margin-right: 10px;
+}
 
+.buildings{
+	margin-top: 0px;
+	border:3px solid black;
+	padding:10px;
+	border-top: none;
+	min-width:100%;
+	min-height:70px;
+	margin-bottom: 5px;
+	background-color: lightgrey;
+}
+
+.building{
+	cursor:pointer;
+	display:flex;
+	position:relative;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+
+	border:3px solid black;
+	padding:10px;
+	margin-bottom:5px;
+}
+
+.buildingSelected{
+	cursor:pointer;
+	display:flex;
+	position:relative;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	background-color: lightgreen;
+	border:3px solid black;
+	padding:10px;
+	margin-bottom:5px;
+}
+
+.building:hover{
+	background-color: lightgrey;
+}
 
 #propTitle{
 	margin-bottom: 20px;
@@ -426,9 +500,13 @@ when reading and editing data for properties respectively */
 	position:absolute;
 	width:100%;
 	height:100%;
+	display:block;
 	top:0;
 	left:0;
 	z-index: 5000;
+	border: none;
+
+
 
 
 }

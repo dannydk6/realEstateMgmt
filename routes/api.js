@@ -28,6 +28,7 @@ router.post('/properties/img/upload', multer({ dest: './public/img/uploads/'}).s
 // Bring in mongoose model, Place, to represent a restaurant
 const Property = mongoose.model('Property');
 const User = mongoose.model('User');
+const Building = mongoose.model('Building');
 
 // TODO: create two routes that return json
 // GET /api/places
@@ -109,23 +110,43 @@ router.post('/properties/create', (req, res) => {
 			tmp = mySlug;
 			mySlug = "num" + tmp;
 		}
-		const newProperty = new Property({
-		name: req.body['prop-name'],
-		address: {street: req.body['prop-street'], city: req.body['prop-city'],
-				  st: req.body['prop-state'], zip: req.body['prop-zip']},
-		owner: {name: req.body['landlord-name'], st: req.body['landlord-state'],
-				address: {street: req.body['owner-street'], city: req.body['owner-city'],
-				  st: req.body['owner-state'], zip: req.body['owner-zip']} },
-		contact: {salutation: req.body['salutation']||'', first_name: req.body['contact-first'],
-				  last_name: req.body['contact-last'], title: req.body['contact-title']},
-		manager: req.body['prop-manager'],
-		accountant: req.body['prop-accountant'],
-		slug: mySlug,
-		index: user[0].properties.length + 1,
-		dateCreated: new Date(),
-		propertyImage: req.body['img-url']
-		//propertyImage: req.body['img-file']
-		});
+		let newProperty = '';
+		if(req.body['img-url'] !== undefined){
+			newProperty = new Property({
+			name: req.body['prop-name'],
+			address: {street: req.body['prop-street'], city: req.body['prop-city'],
+					  st: req.body['prop-state'], zip: req.body['prop-zip']},
+			owner: {name: req.body['landlord-name'], st: req.body['landlord-state'],
+					address: {street: req.body['owner-street'], city: req.body['owner-city'],
+					  st: req.body['owner-state'], zip: req.body['owner-zip']} },
+			contact: {salutation: req.body['salutation']||'', first_name: req.body['contact-first'],
+					  last_name: req.body['contact-last'], title: req.body['contact-title']},
+			manager: req.body['prop-manager'],
+			accountant: req.body['prop-accountant'],
+			slug: mySlug,
+			index: user[0].properties.length + 1,
+			dateCreated: new Date(),
+			propertyImage: req.body['img-url']
+			//propertyImage: req.body['img-file']
+			});
+		}else{
+			newProperty = new Property({
+			name: req.body['prop-name'],
+			address: {street: req.body['prop-street'], city: req.body['prop-city'],
+					  st: req.body['prop-state'], zip: req.body['prop-zip']},
+			owner: {name: req.body['landlord-name'], st: req.body['landlord-state'],
+					address: {street: req.body['owner-street'], city: req.body['owner-city'],
+					  st: req.body['owner-state'], zip: req.body['owner-zip']} },
+			contact: {salutation: req.body['salutation']||'', first_name: req.body['contact-first'],
+					  last_name: req.body['contact-last'], title: req.body['contact-title']},
+			manager: req.body['prop-manager'],
+			accountant: req.body['prop-accountant'],
+			slug: mySlug,
+			index: user[0].properties.length + 1,
+			dateCreated: new Date()
+			//propertyImage: req.body['img-file']
+			});			
+		}
 
 		User.findOneAndUpdate({username: req.body.username}, {$push: {properties: newProperty} } ,
 		(err, newProp) => {
@@ -198,7 +219,7 @@ router.post('/properties/delete', (req, res) => {
 
 		let myIndex = user.properties.find(o => o.slug === req.body.propSlug).index - 1;
 		console.log('\n\n\nThis my index: ' + myIndex);
-		newProperties = user.properties;
+		let newProperties = user.properties;
 		console.log(newProperties);
 		if(myIndex < newProperties.length - 1){
 			for(let i = myIndex; i < newProperties.length; i++){
@@ -217,6 +238,113 @@ router.post('/properties/delete', (req, res) => {
 		});
 
 	});
+});
+
+//Add a building to property
+router.post('/properties/buildings/create', (req, res) => {
+	console.log('img-url was undefined?' + req.body['img-url']);
+	if(req.body['img-url'] !== undefined){
+		console.log('Username: ' + req.body.username);
+		User.find({slug: req.body.username},
+			(err, myUser) => {
+			//Run through all properties and find
+			// there exists a property with this slug.
+			// Update that property with this info.
+
+			let mySlug = req.body.name.split(' ').join('');
+
+			mySlug = mySlug.split('"').join('').split("'").join('').split('(').join('');
+			mySlug = mySlug.split('<').join('').split('>').join('').split('.').join('');
+			mySlug = mySlug.split(')').join('').split('/').join('').split("\/").join('');
+			mySlug = mySlug.split('#').join('').split('&').join('').split(';').join('');
+			if (!isNaN(mySlug.charAt(0))){
+				tmp = mySlug;
+				mySlug = "num" + tmp;
+			}
+
+			let myIndex = myUser[0].properties.find(o => o.slug === req.body.propSlug).index - 1;
+			console.log('\n\n\nThis my index: ' + myIndex);
+			const newProperties = myUser[0].properties;
+
+			const newBuilding = new Building({
+				name: req.body.name,
+				slug: mySlug,
+				address: {street:req.body.street, st: req.body.state,
+					city:req.body.city, zip: req.body.zip},
+				type: req.body.type,
+				index: (newProperties[myIndex].buildings.length+1) || 1,
+				dateCreated: new Date(),
+				buildingImage: req.body['img-url']
+			});
+
+			newProperties[myIndex].buildings.push(newBuilding);
+
+			User.findOneAndUpdate({slug: req.body.username}, 
+				{$set: {"properties": newProperties}},
+			(err, user)=>{
+				res.json(newBuilding);
+
+			});
+
+
+		});		
+	}else{
+		console.log('Username: ' + req.body.username);
+		User.find({slug: req.body.username},
+			(err, myUser) => {
+			//Run through all properties and find
+			// there exists a property with this slug.
+			// Update that property with this info.
+
+			let mySlug = req.body.name.split(' ').join('');
+
+			mySlug = mySlug.split('"').join('').split("'").join('').split('(').join('');
+			mySlug = mySlug.split('<').join('').split('>').join('').split('.').join('');
+			mySlug = mySlug.split(')').join('').split('/').join('').split("\/").join('');
+			mySlug = mySlug.split('#').join('').split('&').join('').split(';').join('');
+			if (!isNaN(mySlug.charAt(0))){
+				tmp = mySlug;
+				mySlug = "num" + tmp;
+			}
+
+			let myIndex = myUser[0].properties.find(o => o.slug === req.body.propSlug).index - 1;
+			console.log('\n\n\nThis my index: ' + myIndex);
+			const newProperties = myUser[0].properties;
+
+			const newBuilding = new Building({
+				name: req.body.name,
+				slug: mySlug,
+				address: {street:req.body.street, st: req.body.state,
+					city:req.body.city, zip: req.body.zip},
+				type: req.body.type,
+				index: (newProperties[myIndex].buildings.length+1) || 1,
+				dateCreated: new Date()
+			});
+
+			newProperties[myIndex].buildings.push(newBuilding);
+
+			User.findOneAndUpdate({slug: req.body.username}, 
+				{$set: {"properties": newProperties}},
+			(err, user)=>{
+				res.json(newBuilding);
+
+			});
+
+
+		});		
+	}
+});
+
+router.get('/properties/buildings', function(req, res) {
+
+	User.find({slug: req.query.username}, (err, user) =>{
+		let prop = user[0].properties.find(x => x.slug === req.query.propSlug);
+		console.log('Property: ' + prop);
+		let building = prop.buildings.find(x => x.slug === req.query.buildSlug);
+		console.log('Building: ' + building);
+		res.json(building);
+	});
+
 });
 
 

@@ -23,9 +23,11 @@ router.get('/', (req, res) => {
 });
 
 // Home page for users.
+// During testing, it goes straight to properties page on log in.
 router.get('/home', (req, res) => {
 	if(req.user !== undefined){
-		res.render('user/home', { layout:"layouts/user", title: "Home"});
+		res.redirect('/properties');
+		//res.render('user/home', { layout:"layouts/user", title: "Home"});
 	}else{
 		res.redirect('/login');
 	}

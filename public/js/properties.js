@@ -13,53 +13,22 @@ function removeAllChildren(node){
 }
 
 function main(evt){
-	// These are all the headers and their corresponding key values in database
+	// These are all the headers and their corresponding key values in database.
+	// This is used in getProperty.
 	const headers = [["address","Address:", "address" ], ["owner","Owner:", "object", "name"], 
 	["owner","Owner Address:","address"],["contact","Owner Contact:", "contact"], ["type","Property Type:", "string"], 
 	["manager","Property Manager:", "string"], ["accountant","Property Accountant:","string"],
 	["occupancy", "Occupancy:", "string"]];
 
-	// TODO: Add event listeners for each property after load.
+	// Add event listeners for each property after load.
 	const sidebarProps = document.querySelector('#sidebarProperties');
 	for(let i = 0; i < sidebarProps.children.length; i++){
-		sidebarProps.children[i].addEventListener('click', getProperty);
+		sidebarProps.children[i].children[0].addEventListener('click', getPropertyMain);
 	}
-
-	// This is the button that adds a new property to the page.
-	const createPropBtn = document.querySelector('.createBtn')
-	createPropBtn.addEventListener('click', createNewProperty);
-
-	// There is a sendPropBtn on page start up only if the user has no properties.
-	// Add an event listener to sendPropBtn if it exists on the page.
-	const sendPropBtn = document.querySelector('#sendPropBtn');
-	if(sendPropBtn !== null){
-		sendPropBtn.addEventListener('click', createProperty);
-	}
-
-	// This is a button that allows uploading a file.
-	const getFileBtn = document.getElementById('getFile');
-	// We know there is a create page up if there is a getFileBtn
-	if(getFileBtn !== null){
-		getFileBtn.addEventListener('change', handleFileSelect, false);	
-	}
-
-	const showProp = document.querySelector('#showProp');
-	if(showProp !== null){
-		sidebarProperties.children[0].classList.add('propertySelected');
-		getProperty.call(sidebarProperties.children[0]);
-	}
-	// The edit button appears for created properties. This one is the one that shows on initial screen load.
-	const editBtn = document.querySelector('#editBtn');
-	if(editBtn !== null){
-		editBtn.addEventListener('click', editProperty);
-		// If there is an edit button, we also know that the first property is selected
-		const sidebarProperties = document.querySelector('#sidebarProperties')
-								  .children[0].classList.add('propertySelected');
-	}
-
 
 	// This div wraps the overflow. Manipulate this div for getting to certain areas for scrolling.
 	const mainWrap = document.querySelector('#mainWrap');
+
 	//This div contains the main content on the page.
 	const contentDiv = document.querySelector('#content');
 
@@ -73,6 +42,32 @@ function main(evt){
 	// This select dropdown is used for choosing parameters in sidebar.
 	const fieldsBox = document.querySelector('#soflow');
 	fieldsBox.addEventListener('change', getAllProperties);
+
+	// This is the button that adds a new property to the page.
+	const createPropBtn = document.querySelector('.createBtn')
+	createPropBtn.addEventListener('click', createNewProperty);
+
+	// Using handlebars, we can add hidden input to see if there are any properties.
+	// If there aren't, display createNewProperty. If there is, select the first one
+	// And display its contents.
+	const showProp = document.querySelector('#showProp');
+	if(showProp !== null){
+		sidebarProperties.children[0].classList.add('propertySelected');
+		getProperty.call(sidebarProperties.children[0]);
+	}else{
+		//createNewProperty();
+	}
+	// The edit button appears for created properties. This one is the one that shows on initial screen load.
+	const editBtn = document.querySelector('#editBtn');
+	if(editBtn !== null){
+		editBtn.addEventListener('click', editProperty);
+		// If there is an edit button, we also know that the first property is selected
+		const sidebarProperties = document.querySelector('#sidebarProperties')
+								  .children[0].classList.add('propertySelected');
+	}
+
+
+	
 
 
 
@@ -93,7 +88,7 @@ function main(evt){
 			imgForm.appendChild(imgFileCopy);
 
 			const imgFormData = new FormData(imgForm);
-			console.log(imgFormData);
+			//console.log(imgFormData);
 
 			const imgReq = new XMLHttpRequest();
 
@@ -103,14 +98,14 @@ function main(evt){
 
 				let imgPath = JSON.parse(imgReq.responseText).path;
 				let imgUrl = chooseURL(imgPath);
-				console.log(imgUrl);
+				//console.log(imgUrl);
 				hiddenInput = document.createElement('input');
 				hiddenInput.name = 'img-url';
 				hiddenInput.type = 'hidden';
 				hiddenInput.value = imgPath;
 
 				document.querySelector('#form-inputs').appendChild(hiddenInput);
-				console.log(document.querySelector('#form-inputs'));
+				//console.log(document.querySelector('#form-inputs'));
 
 				formData = new FormData(document.querySelector('#newPropForm'));
 
@@ -141,7 +136,7 @@ function main(evt){
 				        let propName = document.querySelector('#propertyNameInput').value;
 
 				        const fieldSelected = fieldsBox.options[fieldsBox.selectedIndex].textContent;
-				        console.log(fieldSelected);
+				        //console.log(fieldSelected);
 				        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
 				        				 {value: 'Owner', id: '#landlordInput'},
 				        				 {value: 'Property Manager', id: '#propManager'},
@@ -149,6 +144,7 @@ function main(evt){
 				        				 {value: 'Property Type', id: ''}];
 				        //Do this for the selected value
 				        const currId = mapping.find(o => o.value === fieldSelected).id;
+
 				        let propField = document.querySelector(currId).value;
 
 						let newProperty = document.createElement('div');
@@ -160,8 +156,13 @@ function main(evt){
 						propFieldSpan.classList.add('prop-field');
 						propFieldSpan.textContent = propField;
 
-						newProperty.appendChild(propNameSpan);
-						newProperty.appendChild(propFieldSpan);
+						const propertyMain = document.createElement('div');
+						propertyMain.classList.add('propertyMain');
+
+
+						newProperty.appendChild(propertyMain);
+						propertyMain.appendChild(propNameSpan);
+						propertyMain.appendChild(propFieldSpan);
 						sidebarProps.appendChild(newProperty);
 						//Use slug as property id.
 						newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
@@ -222,7 +223,7 @@ function main(evt){
 			        let propName = document.querySelector('#propertyNameInput').value;
 
 			        const fieldSelected = fieldsBox.options[fieldsBox.selectedIndex].textContent;
-			        console.log(fieldSelected);
+			        //console.log(fieldSelected);
 			        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
 			        				 {value: 'Owner', id: '#landlordInput'},
 			        				 {value: 'Property Manager', id: '#propManager'},
@@ -241,8 +242,13 @@ function main(evt){
 					propFieldSpan.classList.add('prop-field');
 					propFieldSpan.textContent = propField;
 
-					newProperty.appendChild(propNameSpan);
-					newProperty.appendChild(propFieldSpan);
+					const propertyMain = document.createElement('div');
+					propertyMain.classList.add('propertyMain');
+
+
+					newProperty.appendChild(propertyMain);
+					propertyMain.appendChild(propNameSpan);
+					propertyMain.appendChild(propFieldSpan);
 					sidebarProps.appendChild(newProperty);
 					//Use slug as property id.
 					newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
@@ -283,7 +289,7 @@ function main(evt){
 		url += "slug=" + document.querySelector('#hiddenVal').value;
 		const username = document.querySelector('#username').value;
 		url += "&username=" + username;
-		console.log(url);
+		//console.log(url);
 
 		req.open('GET', url, true);
 		req.addEventListener('load', function() {
@@ -432,7 +438,7 @@ function main(evt){
 	        '<input type="file" id="getFile" accept="image/*" name="img-file"/>' +
 	        '<i class="fa fa-search" id="searchIcon"></i>';
 
-	        if(data.propertyImage !== ''){
+	        if(data.propertyImage !== '' && data.propertyImage !== undefined){
 	        	propPhoto.innerHTML += '<img src="' + chooseURL(data.propertyImage) + 
 				'" id="propImg" class="propImg">';;
 	        }
@@ -452,13 +458,24 @@ function main(evt){
 	// This controls what the create new property button does in the top left.
 	// Makes an editable interface to add a new property.
 	function createNewProperty(evt){
-		evt.preventDefault();	
+		if(evt !== undefined){
+			evt.preventDefault();			
+		}else{
+			contentDiv.scrollTop = 0;
+		}
+
 
 		const currSelection = document.querySelector('.propertySelected');
 
 		// Depending on which property is selected, we will deselect
 		// and select the appropriate property in the sidebar.
 		if(currSelection !== null){
+			// Remove buildings div only if it exists
+			if(currSelection.children[1] !== undefined){
+				currSelection.removeChild(currSelection.children[1]);
+			}
+			currSelection.addEventListener('click', getProperty);
+			
 			currSelection.classList.remove('propertySelected');
 			currSelection.classList.add('property');
 		}
@@ -555,11 +572,23 @@ function main(evt){
 		document.getElementById('getFile').addEventListener('change', handleFileSelect, false);
 	}
 
+	function getPropertyMain(evt){
+		getProperty.call(this.parentNode);
+	}
+
 	//This function is called when a property is clicked.
 	function getProperty(evt){
-		//This div contains the main content on the page.
-		// Lets remove everything in it.
+		this.removeEventListener('click', getProperty);
+
+		// This class is assigned to whichever property is currently selected.
 		const currSelection = document.querySelector('.propertySelected');
+
+		const buildingSelected = document.querySelector('.buildingSelected');
+
+		if(buildingSelected !== null){
+			buildingSelected.classList.remove('buildingSelected');
+			buildingSelected.classList.add('building');
+		}
 
 		// Depending on which property is selected, we will deselect
 		// and select the appropriate property in the sidebar.
@@ -568,123 +597,343 @@ function main(evt){
 				this.classList.add('propertySelected');
 				this.classList.remove('property');
 			}else if(currSelection.id !== this.id){
+				if(currSelection.children[1] !== undefined){
+					currSelection.removeChild(currSelection.children[1]);
+				}
 				currSelection.classList.remove('propertySelected');
 				currSelection.classList.add('property');
 				this.classList.add('propertySelected');
 				this.classList.remove('property');
 			}
+		}else{
+			if(currSelection === null){
+				this.classList.add('propertySelected');
+				this.classList.remove('property');
+			}else if(currSelection.id !== this.id){
+				if(currSelection.children[1] !== undefined){
+					currSelection.removeChild(currSelection.children[1]);
+				}
+				currSelection.classList.remove('propertySelected');
+				currSelection.classList.add('property');
+				this.classList.add('propertySelected');
+				this.classList.remove('property');
+			}else{
+				this.classList.add('propertySelected');
+				this.classList.remove('property');
+			}
 		}
+
+		const newSelection = this;
 		// Do an xmlhttprequest for the property
 		const req = new XMLHttpRequest();
 		let url = chooseURL('/api/properties?');
 		//Get the slug from the id.
 		let slug = this.id.replace(/_\d*$/, '').substr(0,this.id.length-2);
-		console.log(slug);
+		//console.log(slug);
 		url += "slug=" + slug;
 		const username = document.querySelector('#username').value;
 		url += "&username=" + username;
-		console.log(url);
+		//console.log(url);
 
+		// Get info from database on the selected property.
 		req.open('GET', url, true);
 		req.addEventListener('load', function() {
-		if (req.status >= 200 && req.status < 400){
-			// if there was a successful request, 
-			// Load the page with database info for 
-			// that property.
-			const data = JSON.parse(req.responseText);
-			removeAllChildren(contentDiv);
-			contentDiv.classList.remove('contentWrite');
-			contentDiv.classList.add('contentRead');
+			if (this.status >= 200 && this.status < 400){
+				// if there was a successful request, 
+				// Load the page with database info for 
+				// that property.
+				const data = JSON.parse(this.responseText);
+				removeAllChildren(contentDiv);
 
-			// Add property-photo and editBtn elements
-			const propertyPhoto = document.createElement('div');
-			propertyPhoto.id = "property-photo";
-			propertyPhoto.classList.add('edit');
-			if(data.propertyImage !== '' && data.propertyImage !== undefined){
-				propertyPhoto.innerHTML = '<img src="' + chooseURL(data.propertyImage) + 
-				'" id="propImg" class="propImg"></img>';
-			}
-			
+				// Add a buildings div if there are any buildings in property.
+				// Populate the div with buildings.
+				if(newSelection.children[1] === undefined && data.buildings.length > 0){
+					const buildingsDiv = document.createElement('div');
+					buildingsDiv.classList.add('buildings');
 
-			const editBtn = document.createElement('div');
+					newSelection.appendChild(buildingsDiv);
 
-			editBtn.innerHTML = "Edit &nbsp; <i class='fa fa-edit'></i><input type='hidden' id='hiddenVal' value='" +
-								data.slug + "'>"
-			editBtn.id = "editBtn";
-			editBtn.addEventListener('click', editProperty);
+					for(let i = 0; i < data.buildings.length; i++){
+						const newBuilding = document.createElement('div');
+						newBuilding.classList.add('building');
+						newBuilding.id = data.buildings[i].slug + '_' + data.buildings[i].index;
 
-			contentDiv.appendChild(editBtn);
-			contentDiv.appendChild(propertyPhoto);
+						let propNameSpan = document.createElement('span');
+						propNameSpan.classList.add('prop-name');
+						propNameSpan.textContent = data.buildings[i].name;
+						let propFieldSpan = document.createElement('span');
+						propFieldSpan.classList.add('prop-field');
+						propFieldSpan.textContent = data.buildings[i].type;
 
-			//Create the property title and add it in.
-			const propTitle = document.createElement('h3');
-			propTitle.id = 'propTitle';
-			propTitle.textContent = data.name;
+						newBuilding.appendChild(propNameSpan);
+						newBuilding.appendChild(propFieldSpan);		
+						buildingsDiv.appendChild(newBuilding);
 
-			contentDiv.appendChild(propTitle);
+						newBuilding.addEventListener('click', getBuilding);		
+					}
+				}
 
-			// create container div for header-value pairs
-			const infoRead = document.createElement('div');
-			infoRead.id = "infoRead";
+				contentDiv.classList.remove('contentWrite');
+				contentDiv.classList.add('contentRead');
 
-			contentDiv.appendChild(infoRead);
-
-			// For each header, create a valuesRead Div, headersRead Div,
-			// and vals for the values. If its an address, change formatting.
-			headers.forEach((header) =>{
-				const valuesRead = document.createElement('div');
-				valuesRead.classList.add('valuesRead');
-
-				const headerRead = document.createElement('div');
-				headerRead.classList.add('headerRead');
-				if(header[0] === "owner" && header[2] === "address"){
-					headerRead.innerHTML = "<div>Owner</div><div>Address:</div>";
-				}else{
-					headerRead.textContent = header[1];
+				// Add property-photo and editBtn elements
+				const propertyPhoto = document.createElement('div');
+				propertyPhoto.id = "property-photo";
+				propertyPhoto.classList.add('edit');
+				if(data.propertyImage !== '' && data.propertyImage !== undefined){
+					propertyPhoto.innerHTML = '<img src="' + chooseURL(data.propertyImage) + 
+					'" id="propImg" class="propImg"></img>';
 				}
 				
 
+				const editBtn = document.createElement('div');
+
+				editBtn.innerHTML = "Edit &nbsp; <i class='fa fa-edit'></i><input type='hidden' id='hiddenVal' value='" +
+									data.slug + "'>"
+				editBtn.id = "editBtn";
+				editBtn.addEventListener('click', editProperty);
+
+				contentDiv.appendChild(editBtn);
+				contentDiv.appendChild(propertyPhoto);
+
+				//Create the property title and add it in.
+				const propTitle = document.createElement('h3');
+				propTitle.id = 'propTitle';
+				propTitle.textContent = data.name;
+
+				contentDiv.appendChild(propTitle);
+
+				// create container div for header-value pairs
+				const infoRead = document.createElement('div');
+				infoRead.id = "infoRead";
+
+				contentDiv.appendChild(infoRead);
+
+				// For each header, create a valuesRead Div, headersRead Div,
+				// and vals for the values. If its an address, change formatting.
+				headers.forEach((header) =>{
+					const valuesRead = document.createElement('div');
+					valuesRead.classList.add('valuesRead');
+
+					const headerRead = document.createElement('div');
+					headerRead.classList.add('headerRead');
+					if(header[0] === "owner" && header[2] === "address"){
+						headerRead.innerHTML = "<div>Owner</div><div>Address:</div>";
+					}else{
+						headerRead.textContent = header[1];
+					}
+					
+
+					const vals = document.createElement('div');
+					vals.classList.add('vals');
+					if(data[header[0]] !== undefined){
+						if(header[2] === "object"){
+							vals.innerHTML = "<div>" + data[header[0]][header[3]] + "</div>";
+						}else if(header[2] === "address"){
+							if(header[0] === "address"){
+								vals.innerHTML = "<div>" + data.address.street + "</div>";
+								vals.innerHTML += "<div>" + data.address.city + 
+								", " + data.address.st + " " + data.address.zip + "</div>";
+							}else{
+								vals.innerHTML = "<div>" + data[header[0]].address.street + "</div>";
+								vals.innerHTML += "<div>" + data[header[0]].address.city + 
+								", " + data[header[0]].address.st + " " + data[header[0]].address.zip + "</div>";
+							}
+						}else if(header[2] === "contact"){
+							//console.log('did we get here')
+							vals.innerHTML = "<div>" + data[header[0]].salutation + " " + 
+							data[header[0]].first_name + " " + data[header[0]].last_name;
+						}else{
+							vals.innerHTML = "<div>" + data[header[0]] + "</div>";
+						}
+					}else{
+						vals.innerHTML = "";
+					}
+
+					valuesRead.appendChild(headerRead);
+					valuesRead.appendChild(vals);
+
+					infoRead.appendChild(valuesRead);
+					mainWrap.scrollTop = 0;
+				});	
+
+
+				const valuesRead = document.createElement('div');
+				valuesRead.classList.add('valuesRead');
+				const buildingsHeader = document.createElement('div');
+				buildingsHeader.classList.add('headerRead');
+				buildingsHeader.innerHTML = "<b>Buildings<b>";
+
 				const vals = document.createElement('div');
 				vals.classList.add('vals');
-				if(data[header[0]] !== undefined){
-					if(header[2] === "object"){
-						vals.innerHTML = "<div>" + data[header[0]][header[3]] + "</div>";
-					}else if(header[2] === "address"){
-						if(header[0] === "address"){
-							vals.innerHTML = "<div>" + data.address.street + "</div>";
-							vals.innerHTML += "<div>" + data.address.city + 
-							", " + data.address.st + " " + data.address.zip + "</div>";
-						}else{
-							vals.innerHTML = "<div>" + data[header[0]].address.street + "</div>";
-							vals.innerHTML += "<div>" + data[header[0]].address.city + 
-							", " + data[header[0]].address.st + " " + data[header[0]].address.zip + "</div>";
-						}
-					}else if(header[2] === "contact"){
-						console.log('did we get here')
-						vals.innerHTML = "<div>" + data[header[0]].salutation + " " + 
-						data[header[0]].first_name + " " + data[header[0]].last_name;
-					}else{
-						vals.innerHTML = "<div>" + data[header[0]] + "</div>";
-					}
-				}else{
-					vals.innerHTML = "";
-				}
 
-				valuesRead.appendChild(headerRead);
-				valuesRead.appendChild(vals);
 
 				infoRead.appendChild(valuesRead);
-				mainWrap.scrollTop = 0;
-			});
+				valuesRead.appendChild(buildingsHeader);
+				valuesRead.appendChild(vals);
 
-			
-		} });
+				if(data.buildings === undefined || data.buildings.length < 1){
+					const addBuildingBtn = document.createElement('div');
+					addBuildingBtn.classList.add('addBuildingBtn');
+					addBuildingBtn.innerHTML = '<a href=""><u>+ Add Building</u></a>';
+					addBuildingBtn.addEventListener('click', addNewBuilding);
+
+					vals.appendChild(addBuildingBtn);
+
+				}else{
+					const buildTable = document.createElement('table');
+					buildTable.classList.add('table');
+					buildTable.classList.add('table-sm');
+					buildTable.classList.add('table-hover');
+					buildTable.innerHTML = '' +
+					  '<thead>' +
+					    '<tr>' +
+					      '<th scope="col">#</th>' +
+					      '<th scope="col">Name</th>' +
+					      '<th scope="col">Type</th>' +
+					      '<th scope="col">State</th>' +
+					    '</tr>' +
+					  '</thead>';
+
+					const tableBody = document.createElement('tbody');
+					buildTable.appendChild(tableBody);
+
+					for(let i = 0; i < data.buildings.length; i++){
+						const tableRow = document.createElement('tr');
+						tableRow.innerHTML = "" +
+						'<td>' + (i+1) + '</td>' +
+						'<td>' + data.buildings[i].name + '</td>' +
+						'<td>' + data.buildings[i].type + '</td>' +
+						'<td>' + data.buildings[i].address.st + '</td>';
+
+						tableBody.appendChild(tableRow);
+					}
+
+					infoRead.appendChild(buildTable);
+					const addBuildingBtn = document.createElement('div');
+					addBuildingBtn.classList.add('addBuildingBtn');
+					addBuildingBtn.innerHTML = '<a href=""><u>+ Add Building</u></a>';
+					addBuildingBtn.addEventListener('click', addNewBuilding);
+
+					vals.appendChild(addBuildingBtn);
+				}
+
+
+
+
+
+			} 
+		});
 		req.send();
 
-		// TODO: Clear out the main content window.
-
-
 	}
+
+	// Add a building to a given property for a given user.
+	function addNewBuilding(evt){
+
+		evt.preventDefault();			
+		contentDiv.scrollTop = 0;
+		removeAllChildren(contentDiv);
+
+		const propPhoto = document.createElement('div');
+		propPhoto.id = "property-photo";
+		propPhoto.classList.add('clickable');
+		propPhoto.innerHTML = 'Add Building Photo' +
+	    '<input type="file" id="getFile" accept="image/*" name="img-file"/>' +
+	    '<i class="fa fa-search" id="searchIcon"></i>';
+
+    	contentDiv.appendChild(propPhoto);
+
+		// Handle file selects
+		document.getElementById('getFile').addEventListener('change', handleFileSelect, false);
+
+
+		const myForm = document.createElement('form');
+		myForm.id = "myForm";
+
+		 //Put the username in the form (its really the slug)
+        let username = document.querySelector('#username').value;
+        myForm.innerHTML = "<input type='hidden' name='username' value='" + username + "'>";
+
+        // Get the slug from selected property
+        const selectedProp = document.querySelector('.propertySelected').id;
+
+        // Use a regex to remove index to get actual slug of property
+        let propSlug = selectedProp.replace(/_\d*$/, '');
+        myForm.innerHTML += "<input type='hidden' name='propSlug' value='" + propSlug + "'>";
+
+
+
+		contentDiv.appendChild(myForm);
+
+		const formGroup = document.createElement('div');
+
+		//Property name input
+		formGroup.classList.add('form-group');
+		formGroup.innerHTML = '<input type="text" class="form-control" id="propertyNameInput" placeholder="Enter Building Name" name="name">'; 
+
+		myForm.appendChild(formGroup);
+		contentDiv.appendChild(myForm);
+		// create container div for header-value pairs
+		const infoRead = document.createElement('div');
+		infoRead.id = "infoRead";
+
+		myForm.appendChild(infoRead);
+
+		const buildHeaders = [["Type:","type"],["Address:", "address"]];
+
+		// For each header, create a valuesRead Div, headersRead Div,
+		// and vals for the values. If its an address, change formatting.
+		buildHeaders.forEach((header) =>{
+			const valuesRead = document.createElement('div');
+			valuesRead.classList.add('valuesRead');
+
+			const headerRead = document.createElement('div');
+			headerRead.classList.add('headerAddBuild');
+
+			headerRead.textContent = header[0];
+			
+			const vals = document.createElement('div');
+			vals.classList.add('valsWrite');
+	
+			if(header[1] === "type"){
+				const typeSelect = document.createElement('select');
+				typeSelect.classList.add('form-control');
+				typeSelect.name = 'type';
+				typeSelect.innerHTML = '' +
+	            '<option>Office</option>' +
+              	'<option>Retail</option>' +
+              	'<option>Residential</option>' +
+              	'<option>Industrial</option>' +
+              	'<option>Other</option>';
+              	vals.appendChild(typeSelect);
+
+			}else if(header[1] === "address"){
+				vals.innerHTML = "" +
+				'<input type="text" class="form-control" id="streetInput" placeholder="Enter Street" name="street">' +
+              	'<input type="text" class="form-control" id="cityInput" placeholder="Enter City" name="city">' + 
+              	'<input type="text" class="form-control" id="stateInput" placeholder="Enter State" name="state">' +
+              	'<input type="text" class="form-control" id="zipInput" placeholder="Enter Zip Code" name="zip">';
+              	const createBuildBtn = document.createElement('button');
+              	createBuildBtn.id = "createBuildBtn";
+              	createBuildBtn.classList.add('btn', 'btn-primary');
+              	createBuildBtn.textContent = "Add Building";
+              	createBuildBtn.addEventListener('click', createBuilding);
+              	vals.appendChild(createBuildBtn);
+			}else{
+				vals.innerHTML = "<input type='text' name=''" + header[1] + ">";
+			}
+
+			valuesRead.appendChild(headerRead);
+			valuesRead.appendChild(vals);
+
+			infoRead.appendChild(valuesRead);
+
+		});	
+		
+	}
+
+
 
 	// Use this to update sidebar text values after user changes fields dropdown menu option.
 	function getAllProperties(evt){
@@ -693,12 +942,12 @@ function main(evt){
 		let url = chooseURL('/api/allProperties?');
 		//Get the slug from the id.
 		let slug = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
-		console.log(slug);
+		//console.log(slug);
 		url += "slug=" + slug;
 		const username = document.querySelector('#username').value;
 		url += "&username=" + username;
 		url += "&type=" + fieldsBox.options[fieldsBox.selectedIndex].value;
-		console.log(url);
+		//console.log(url);
 
 		req.open('GET', url, true);
 		req.addEventListener('load', function() {
@@ -709,13 +958,12 @@ function main(evt){
 			const data = JSON.parse(req.responseText);	
 
 			data.forEach((prop) =>{
-				document.querySelector('#' + prop.slug).children[1].textContent = prop.value;
+				document.querySelector('#' + prop.slug).children[0].children[1].textContent = prop.value;
 			})	
 
 			if(fieldSort.classList.contains('sorted')){
 				sortPropertiesField(undefined);
 			}
-
 
 
 			
@@ -728,13 +976,13 @@ function main(evt){
 		const sidebarProperties = document.querySelector('#sidebarProperties');
 		// If there are no children, then don't do anything.
 		if(sidebarProperties.children.length < 2){
-			console.log("no children or only one, so don't sort");
+			//console.log("no children or only one, so don't sort");
 		}else{
 			let e = sidebarProperties.children;
 			if(!propNameSort.classList.contains('sorted')){
 				// Grab all the children, get their prop-names and ids and save them in array object.
 				[].slice.call(e).sort(function(a, b) {
-					return a.children[0].textContent.toLowerCase() > b.children[0].textContent.toLowerCase();
+					return a.children[0].children[0].textContent.toLowerCase() > b.children[0].children[0].textContent.toLowerCase();
 				}).forEach(function(val, index) {
 				sidebarProperties.appendChild(val);
 				});
@@ -764,13 +1012,13 @@ function main(evt){
 		const sidebarProperties = document.querySelector('#sidebarProperties');
 		// If there are no children, then don't do anything.
 		if(sidebarProperties.children.length < 2){
-			console.log("no children or only one, so don't sort");
+			//console.log("no children or only one, so don't sort");
 		}else{
 			let e = sidebarProperties.children;
 			if(!fieldSort.classList.contains('sorted') || evt === undefined){
 				// Grab all the children, get their prop-names and ids and save them in array object.
 				[].slice.call(e).sort(function(a, b) {
-					return a.children[1].textContent.toLowerCase() > b.children[1].textContent.toLowerCase();
+					return a.children[0].children[1].textContent.toLowerCase() > b.children[0].children[1].textContent.toLowerCase();
 				}).forEach(function(val, index) {
 				sidebarProperties.appendChild(val);
 				});
@@ -808,7 +1056,7 @@ function main(evt){
 
 		// This is for img file upload. This will reupload an image on every single edit so change that soon.
 		const imgFile = document.querySelector('#getFile');
-		console.log(imgFile);
+		//console.log(imgFile);
 		// If there is no img file, avoid upload process.
 		if(imgFile.value !== '' && propName !== ''){
 			const imgForm = document.createElement('form');
@@ -817,7 +1065,7 @@ function main(evt){
 			imgForm.appendChild(imgFileCopy);
 
 			const imgFormData = new FormData(imgForm);
-			console.log(imgFormData);
+			//console.log(imgFormData);
 
 			const imgReq = new XMLHttpRequest();
 
@@ -827,14 +1075,14 @@ function main(evt){
 
 				let imgPath = JSON.parse(imgReq.responseText).path;
 				let imgUrl = chooseURL(imgPath);
-				console.log(imgUrl);
+				//console.log(imgUrl);
 				hiddenInput = document.createElement('input');
 				hiddenInput.name = 'img-url';
 				hiddenInput.type = 'hidden';
 				hiddenInput.value = imgPath;
 
 				document.querySelector('#form-inputs').appendChild(hiddenInput);
-				console.log('Update prop: ' + document.querySelector('#form-inputs'));
+				//console.log('Update prop: ' + document.querySelector('#form-inputs'));
 
 				formData = new FormData(document.querySelector('#newPropForm'));
 
@@ -852,7 +1100,7 @@ function main(evt){
 						//Useful code for changing window's url location after post.
 						//window.location = "/leases";
 						let data = JSON.parse(req.responseText);
-						console.log(data);
+						//console.log(data);
 				        let propName = document.querySelector('#propertyNameInput').value;
 
 						if(propNameSort.classList.contains('sorted')){
@@ -864,15 +1112,15 @@ function main(evt){
 								importantSlug = sidebarProps.children[i].id;
 							}
 						}
-						console.log("Important Slug:" + importantSlug);
+						//console.log("Important Slug:" + importantSlug);
 						let currProp = document.querySelector('#' + importantSlug);
-						currProp.children[0].textContent = data['prop-name'];
+						currProp.children[0].children[0].textContent = data['prop-name'];
 
 						let fieldParam = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
-						console.log(fieldParam);
+						//console.log(fieldParam);
 						let pairs = {manager: 'prop-manager', accountant: 'prop-accountant',
 									 contact: 'contact-first', owner: 'landlord-name'};
-						currProp.children[1].textContent = data[pairs[fieldParam]];
+						currProp.children[0].children[1].textContent = data[pairs[fieldParam]];
 
 						getProperty.call(currProp);
 
@@ -902,7 +1150,7 @@ function main(evt){
 					//Useful code for changing window's url location after post.
 					//window.location = "/leases";
 					let data = JSON.parse(req.responseText);
-					console.log(data);
+					//console.log(data);
 			        let propName = document.querySelector('#propertyNameInput').value;
 
 					if(propNameSort.classList.contains('sorted')){
@@ -914,15 +1162,15 @@ function main(evt){
 							importantSlug = sidebarProps.children[i].id;
 						}
 					}
-					console.log("Important Slug:" + importantSlug);
+					//console.log("Important Slug:" + importantSlug);
 					let currProp = document.querySelector('#' + importantSlug);
-					currProp.children[0].textContent = data['prop-name'];
+					currProp.children[0].children[0].textContent = data['prop-name'];
 
 					let fieldParam = fieldsBox.options[fieldsBox.selectedIndex].id.replace(/_mySlug$/, '');
-					console.log(fieldParam);
+					//console.log(fieldParam);
 					let pairs = {manager: 'prop-manager', accountant: 'prop-accountant',
 								 contact: 'contact-first', owner: 'landlord-name'};
-					currProp.children[1].textContent = data[pairs[fieldParam]];
+					currProp.children[0].children[1].textContent = data[pairs[fieldParam]];
 
 					getProperty.call(currProp);
 
@@ -965,12 +1213,12 @@ function main(evt){
 				}
 
 				importantIndex = +importantSlug.match(/\d*$/)[0];
-				console.log('This is important: ' + importantIndex)
+				//console.log('This is important: ' + importantIndex)
 
 				if(importantIndex < sidebarProps.children.length){
 					[].slice.call(sidebarProps.children).forEach((property) =>{
 						let myIndex = +property.id.match(/\d*$/)[0];
-						console.log(myIndex);
+						//console.log(myIndex);
 
 						if(myIndex > importantIndex){
 							myIndex -= 1;
@@ -986,9 +1234,11 @@ function main(evt){
 
 				removeAllChildren(contentDiv);
 
-				if(sidebarProps.children.length > 1){
+				if(sidebarProps.children.length >= 1){
 					sidebarProps.children[0].classList.add('propertySelected');
 					getProperty.call(sidebarProps.children[0]);
+				}else{
+					createNewProperty();
 				}
 
 
@@ -1000,6 +1250,470 @@ function main(evt){
 		}
 	}
 
+
+	// Add a building to selected property.
+	function createBuilding(evt){
+		evt.preventDefault();
+
+		let formData = new FormData(document.querySelector('#myForm'));
+
+		let buildingName = document.querySelector('#propertyNameInput').value;
+
+		// Check the building name and make sure it exists.
+		let propName = document.querySelector('#propertyNameInput').value;
+
+		// This is for img file upload
+		const imgFile = document.querySelector('#getFile');
+		// If there is no img file, avoid upload process.
+		if(imgFile.value !== '' && propName !== ''){
+			const imgForm = document.createElement('form');
+			imgForm.name = "img-upload";
+			const imgFileCopy = imgFile.cloneNode(true);
+			imgForm.appendChild(imgFileCopy);
+
+			const imgFormData = new FormData(imgForm);
+			console.log(imgFormData);
+
+			const imgReq = new XMLHttpRequest();
+
+			const url = chooseURL('/api/properties/img/upload');
+			imgReq.open('POST', url, true);
+			imgReq.onload = function(){
+
+				let imgPath = JSON.parse(imgReq.responseText).path;
+				let imgUrl = chooseURL(imgPath);
+				//console.log(imgUrl);
+				hiddenInput = document.createElement('input');
+				hiddenInput.name = 'img-url';
+				hiddenInput.type = 'hidden';
+				hiddenInput.value = imgPath;
+
+				document.querySelector('#myForm').appendChild(hiddenInput);
+				//console.log(document.querySelector('#form-inputs'));
+
+				// Refresh form data so it includes path for image.
+				formData = new FormData(document.querySelector('#myForm'));
+
+				// TODO: Have checks for data input and make popups if no input.
+				// TODO: Have checks for data input and make popups if no input.
+				if(propName !== ""){
+					const req = new XMLHttpRequest();
+					
+					const url = chooseURL('/api/properties/buildings/create');
+					req.open('POST', url, true);
+					req.setRequestHeader('Content-Type', 
+						'application/x-www-form-urlencoded; charset=UTF-8');
+					
+					req.onload = function(){
+						//Useful code for changing window's url location after post.
+						//window.location = "/leases";
+
+						// After we have posted the new property, add a div to sidebar.
+						// Give it an event listener so that when it's clicked, we 
+						// issue an xmlhttprequest for the property it is associated with.
+						/*
+					        <div class="property" id={{slug}}>
+					        	<span class="prop-name">Property #1</span>
+					        	<span class="prop-field">Field #1</span>
+					        </div>	
+				        */		
+				        const data = JSON.parse(req.responseText);
+				        const sidebarProps = document.querySelector('#sidebarProperties');
+				        const propertySelected = document.querySelector('.propertySelected');
+				        let propName = document.querySelector('#propertyNameInput').value;
+
+				        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
+				        				 {value: 'Owner', id: '#landlordInput'},
+				        				 {value: 'Property Manager', id: '#propManager'},
+				        				 {value: 'Property Accountant', id: '#propAccountant'},
+				        				 {value: 'Property Type', id: ''}];
+				        //Do this for the selected value
+				        //const currId = mapping.find(o => o.value === fieldSelected).id;
+				        let propField = data.type;
+
+				        // New property is a new building. Add it to buildings inside
+				        // Create a buildings container inside property sidebar
+				        // If a buildings container doesn't exist.
+
+				    	let buildingsDiv = propertySelected.children[1];
+				    	if(buildingsDiv === undefined){
+
+					        let newProperty = document.createElement('div');
+							newProperty.classList.add('building');
+							let propNameSpan = document.createElement('span');
+							propNameSpan.classList.add('prop-name');
+							propNameSpan.textContent = propName;
+							let propFieldSpan = document.createElement('span');
+							propFieldSpan.classList.add('prop-field');
+							propFieldSpan.textContent = propField;
+
+							newProperty.appendChild(propNameSpan);
+							newProperty.appendChild(propFieldSpan);
+
+
+				        	buildingsDiv = document.createElement('div');
+				        	buildingsDiv.classList.add('buildings');
+				        	console.log(buildingsDiv);
+							propertySelected.appendChild(buildingsDiv);
+
+				        	buildingsDiv.appendChild(newProperty);
+							//Use slug as property id.
+
+							newProperty.id = data.slug + "_" + data.index;
+
+							newProperty.addEventListener('click', getBuilding);
+
+							newProperty.classList.add('buildSelected');
+				    	}else{
+				    		let newProperty = document.createElement('div');
+							newProperty.classList.add('building');
+							let propNameSpan = document.createElement('span');
+							propNameSpan.classList.add('prop-name');
+							propNameSpan.textContent = propName;
+							let propFieldSpan = document.createElement('span');
+							propFieldSpan.classList.add('prop-field');
+							propFieldSpan.textContent = propField;
+
+							newProperty.appendChild(propNameSpan);
+							newProperty.appendChild(propFieldSpan);
+
+							propertySelected.appendChild(buildingsDiv);
+
+				        	buildingsDiv.appendChild(newProperty);
+							//Use slug as property id.
+
+							newProperty.id = data.slug + "_" + data.index;
+
+							newProperty.addEventListener('click', getBuilding);
+
+							getBuilding.call(newProperty);
+				    	}
+
+						
+
+					};
+					
+					let params = createPostParams(formData);
+					req.send(params);
+
+				}		
+			}
+			imgReq.send(imgFormData);
+
+		}else{
+			// Check the building name and make sure it exists.
+			let propName = document.querySelector('#propertyNameInput').value;
+
+			// TODO: Have checks for data input and make popups if no input.
+			if(propName !== ""){
+				const req = new XMLHttpRequest();
+				
+				const url = chooseURL('/api/properties/buildings/create');
+				req.open('POST', url, true);
+				req.setRequestHeader('Content-Type', 
+					'application/x-www-form-urlencoded; charset=UTF-8');
+				
+				req.onload = function(){
+					//Useful code for changing window's url location after post.
+					//window.location = "/leases";
+
+					// After we have posted the new property, add a div to sidebar.
+					// Give it an event listener so that when it's clicked, we 
+					// issue an xmlhttprequest for the property it is associated with.
+					/*
+				        <div class="property" id={{slug}}>
+				        	<span class="prop-name">Property #1</span>
+				        	<span class="prop-field">Field #1</span>
+				        </div>	
+			        */		
+			        const data = JSON.parse(req.responseText);
+			        const sidebarProps = document.querySelector('#sidebarProperties');
+			        const propertySelected = document.querySelector('.propertySelected');
+			        let propName = document.querySelector('#propertyNameInput').value;
+
+			        const mapping = [{value: 'Owner Contact', id: '#contactFirst'},
+			        				 {value: 'Owner', id: '#landlordInput'},
+			        				 {value: 'Property Manager', id: '#propManager'},
+			        				 {value: 'Property Accountant', id: '#propAccountant'},
+			        				 {value: 'Property Type', id: ''}];
+			        //Do this for the selected value
+			        //const currId = mapping.find(o => o.value === fieldSelected).id;
+			        let propField = data.type;
+
+			        // New property is a new building. Add it to buildings inside
+			        // Create a buildings container inside property sidebar
+			        // If a buildings container doesn't exist.
+
+			    	let buildingsDiv = propertySelected.children[1];
+			    	if(buildingsDiv === undefined){
+
+				        let newProperty = document.createElement('div');
+						newProperty.classList.add('building');
+						let propNameSpan = document.createElement('span');
+						propNameSpan.classList.add('prop-name');
+						propNameSpan.textContent = propName;
+						let propFieldSpan = document.createElement('span');
+						propFieldSpan.classList.add('prop-field');
+						propFieldSpan.textContent = propField;
+
+						newProperty.appendChild(propNameSpan);
+						newProperty.appendChild(propFieldSpan);
+
+
+			        	buildingsDiv = document.createElement('div');
+			        	buildingsDiv.classList.add('buildings');
+			        	console.log(buildingsDiv);
+						propertySelected.appendChild(buildingsDiv);
+
+			        	buildingsDiv.appendChild(newProperty);
+						//Use slug as property id.
+
+						newProperty.id = data.slug + "_" + data.index;
+
+						newProperty.addEventListener('click', getBuilding);
+
+						newProperty.classList.add('buildSelected');
+			    	}else{
+			    		let newProperty = document.createElement('div');
+						newProperty.classList.add('building');
+						let propNameSpan = document.createElement('span');
+						propNameSpan.classList.add('prop-name');
+						propNameSpan.textContent = propName;
+						let propFieldSpan = document.createElement('span');
+						propFieldSpan.classList.add('prop-field');
+						propFieldSpan.textContent = propField;
+
+						newProperty.appendChild(propNameSpan);
+						newProperty.appendChild(propFieldSpan);
+
+						propertySelected.appendChild(buildingsDiv);
+
+			        	buildingsDiv.appendChild(newProperty);
+						//Use slug as property id.
+
+						newProperty.id = data.slug + "_" + data.index;
+
+						newProperty.addEventListener('click', getBuilding);
+
+						getBuilding.call(newProperty);
+			    	}
+
+				};
+				
+				let params = createPostParams(formData);
+				req.send(params);
+
+			}		
+		}
+	}
+
+	//This function is called when a property is clicked.
+	function getBuilding(evt){
+
+		// This class is assigned to whichever property is currently selected.
+		const currSelection = document.querySelector('.buildingSelected');
+
+		// Depending on which property is selected, we will deselect
+		// and select the appropriate property in the sidebar.
+		if(evt !== undefined){
+			if(currSelection === null){
+				this.classList.add('buildingSelected');
+				this.classList.remove('building');
+			}else if(currSelection.id !== this.id){
+
+				currSelection.classList.remove('buildingSelected');
+				currSelection.classList.add('building');
+				this.classList.add('buildingSelected');
+				this.classList.remove('building');
+			}
+		}else{
+			this.classList.add('buildingSelected');
+			this.classList.remove('building');
+		}
+		const propertySelected = document.querySelector('.propertySelected').id;
+		console.log(propertySelected);
+		const propSlug = propertySelected.replace(/_\d*$/, '');
+
+		const newSelection = this;
+		// Do an xmlhttprequest for the property
+		const req = new XMLHttpRequest();
+		let url = chooseURL('/api/properties/buildings?');
+		//Get the slug from the id.
+		let slug = this.id.replace(/_\d*$/, '').substr(0,this.id.length-2);
+		//console.log(slug);
+		url += "buildSlug=" + slug;
+		//
+		url += "&propSlug=" + propSlug;
+		const username = document.querySelector('#username').value;
+		url += "&username=" + username;
+		//console.log(url);
+
+		// Get info from database on the selected property.
+		req.open('GET', url, true);
+		req.addEventListener('load', function() {
+			if (this.status >= 200 && this.status < 400){
+				// if there was a successful request, 
+				// Load the page with database info for 
+				// that property.
+				const data = JSON.parse(this.responseText);
+				removeAllChildren(contentDiv);
+
+				contentDiv.classList.remove('contentWrite');
+				contentDiv.classList.add('contentRead');
+
+				// Add property-photo and editBtn elements
+				const propertyPhoto = document.createElement('div');
+				propertyPhoto.id = "property-photo";
+				propertyPhoto.classList.add('edit');
+				if(data.buildingImage !== '' && data.buildingImage !== undefined){
+					propertyPhoto.innerHTML = '<img src="' + chooseURL(data.buildingImage) + 
+					'" id="propImg" class="propImg"></img>';
+				}
+				
+				// TODO: Allow for editing Buildings
+
+				const editBtn = document.createElement('div');
+
+				editBtn.innerHTML = "Edit &nbsp; <i class='fa fa-edit'></i><input type='hidden' id='hiddenVal' value='" +
+									data.slug + "'>"
+				editBtn.id = "editBtn";
+				//editBtn.addEventListener('click', editProperty);
+
+				contentDiv.appendChild(editBtn);
+				contentDiv.appendChild(propertyPhoto);
+
+				//Create the property title and add it in.
+				const propTitle = document.createElement('h3');
+				propTitle.id = 'propTitle';
+				propTitle.textContent = data.name;
+
+				contentDiv.appendChild(propTitle);
+
+				// create container div for header-value pairs
+				const infoRead = document.createElement('div');
+				infoRead.id = "infoRead";
+
+				contentDiv.appendChild(infoRead);
+
+				const myHeaders = [["type","Property Type:", "string"], ["address","Address:", "address" ], 
+				["occupancy", "Occupancy:", "string"]];
+
+				// For each header, create a valuesRead Div, headersRead Div,
+				// and vals for the values. If its an address, change formatting.
+				myHeaders.forEach((header) =>{
+					const valuesRead = document.createElement('div');
+					valuesRead.classList.add('valuesRead');
+
+					const headerRead = document.createElement('div');
+					headerRead.classList.add('headerRead');
+
+					headerRead.textContent = header[1];
+					
+					const vals = document.createElement('div');
+					vals.classList.add('vals');
+					if(data[header[0]] !== undefined){
+						if(header[2] === "object"){
+							vals.innerHTML = "<div>" + data[header[0]][header[3]] + "</div>";
+						}else if(header[2] === "address"){
+							if(header[0] === "address"){
+								vals.innerHTML = "<div>" + data.address.street + "</div>";
+								vals.innerHTML += "<div>" + data.address.city + 
+								", " + data.address.st + " " + data.address.zip + "</div>";
+							}else{
+								vals.innerHTML = "<div>" + data[header[0]].address.street + "</div>";
+								vals.innerHTML += "<div>" + data[header[0]].address.city + 
+								", " + data[header[0]].address.st + " " + data[header[0]].address.zip + "</div>";
+							}
+						}else if(header[2] === "contact"){
+							//console.log('did we get here')
+							vals.innerHTML = "<div>" + data[header[0]].salutation + " " + 
+							data[header[0]].first_name + " " + data[header[0]].last_name;
+						}else{
+							vals.innerHTML = "<div>" + data[header[0]] + "</div>";
+						}
+					}else{
+						vals.innerHTML = "";
+					}
+
+					valuesRead.appendChild(headerRead);
+					valuesRead.appendChild(vals);
+
+					infoRead.appendChild(valuesRead);
+					mainWrap.scrollTop = 0;
+				});	
+
+
+				const valuesRead = document.createElement('div');
+				valuesRead.classList.add('valuesRead');
+				const buildingsHeader = document.createElement('div');
+				buildingsHeader.classList.add('headerRead');
+				buildingsHeader.innerHTML = "<b>Suites<b>";
+
+				const vals = document.createElement('div');
+				vals.classList.add('vals');
+
+				infoRead.appendChild(valuesRead);
+				valuesRead.appendChild(buildingsHeader);
+				valuesRead.appendChild(vals);
+
+				if(data.suites === undefined || data.buildings.length < 1){
+					const addBuildingBtn = document.createElement('div');
+					addBuildingBtn.classList.add('addSuitesBtn');
+					addBuildingBtn.innerHTML = '<a href=""><u>+ Add Suite</u></a>';
+					//addBuildingBtn.addEventListener('click', addNewBuilding);
+
+					vals.appendChild(addBuildingBtn);
+
+				}else{
+					const buildTable = document.createElement('table');
+					buildTable.classList.add('table');
+					buildTable.classList.add('table-sm');
+					buildTable.classList.add('table-hover');
+					buildTable.innerHTML = '' +
+					  '<thead>' +
+					    '<tr>' +
+					      '<th scope="col">#</th>' +
+					      '<th scope="col">Name</th>' +
+					      '<th scope="col">Type</th>' +
+					      '<th scope="col">State</th>' +
+					    '</tr>' +
+					  '</thead>';
+
+					const tableBody = document.createElement('tbody');
+					buildTable.appendChild(tableBody);
+
+					for(let i = 0; i < data.buildings.length; i++){
+						const tableRow = document.createElement('tr');
+						tableRow.innerHTML = "" +
+						'<td>' + (i+1) + '</td>' +
+						'<td>' + data.buildings[i].name + '</td>' +
+						'<td>' + data.buildings[i].type + '</td>' +
+						'<td>' + data.buildings[i].address.st + '</td>';
+
+						tableBody.appendChild(tableRow);
+					}
+
+					infoRead.appendChild(buildTable);
+					const addBuildingBtn = document.createElement('div');
+					addBuildingBtn.classList.add('addSuitesBtn');
+					addBuildingBtn.innerHTML = '<a href=""><u>+ Add Suite</u></a>';
+					//addBuildingBtn.addEventListener('click', addNewBuilding);
+
+					vals.appendChild(addBuildingBtn);
+				}
+
+
+
+
+
+			} 
+		});
+		req.send();
+
+	}
+
+
+
 }
 
 // Get all the params and values from the form data and put them into a string.
@@ -1009,7 +1723,7 @@ function createPostParams(formData){
 		pair2clean = pair[1].toString().split(" ").join("%20");
 		parameters = parameters + pair[0] + "=" + pair2clean + "&";
 	}
-	console.log(parameters);
+	//console.log(parameters);
 	return parameters.substr(0, parameters.length-1);
 }
 

@@ -14,7 +14,7 @@ const Service = new mongoose.Schema({
   // All maintenances made for service. 
   // Can be used to get most recent maintenance
   maintenance: [{date: Date, note: String}],
-  // link to service contractx
+  // link to service contract
   contract: String
 });
 
@@ -38,10 +38,35 @@ const Suite = new mongoose.Schema({
   floor_plan: String
 });
 
+
+const Building = new mongoose.Schema({
+  // Building Name
+  name: String,
+  // Slug to search building
+  slug: String,
+  // type: Office, Retail, Residential, Industrial.
+  type: String,
+  // url path for image
+  buildingImage: String,
+  // Services for the property.
+  hvac: [Service],
+  roof: [Service],
+  utilities: [Service],
+
+  acuisition_docs: [{name: String, date: Date, document: String}],
+
+  //Index in the Buildings Array. Use this for sorting.
+  index: Number,
+  // This is the date the building was created on.
+  dateCreated: Date,
+
+  //Building Address
+  address: {street: String, city: String, st: String, zip: String}
+});
+
 const Property = new mongoose.Schema({
   // Property Name
   name: String,
-
   // Slug to search property
   slug: String,
   // type: Office, Retail, Residential, Industrial.
@@ -65,8 +90,8 @@ const Property = new mongoose.Schema({
 
   propertyImage: String,
 
-  // Array of suites in a property.
-  suites: [Suite],
+  // Array of Buildings in a property.
+  buildings: [Building],
 
   // Services for the property.
   hvac: [Service],
@@ -125,6 +150,7 @@ mongoose.model('User', User);
 mongoose.model('Property', Property);
 mongoose.model('Service', Service);
 mongoose.model('Suite', Suite);
+mongoose.model('Building', Building);
 
 // Initialize string that will be passed to mongoose.connect
 // for connecting to the database.
