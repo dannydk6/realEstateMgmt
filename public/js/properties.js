@@ -72,6 +72,7 @@ function main(evt){
 
 
 	function createProperty(evt){
+		this.removeEventListener('click', createProperty);
 		evt.preventDefault();
 
 		let formData = new FormData(document.querySelector('#newPropForm'));
@@ -1047,6 +1048,7 @@ function main(evt){
 	}
 	//TODO: Fix the bug with picture
 	function updateProperty(evt){
+		this.removeEventListener('click', updateProperty)
 		evt.preventDefault();
 
 		let formData = new FormData(document.querySelector('#newPropForm'));
@@ -1253,6 +1255,7 @@ function main(evt){
 
 	// Add a building to selected property.
 	function createBuilding(evt){
+		this.removeEventListener('click', createBuilding);
 		evt.preventDefault();
 
 		let formData = new FormData(document.querySelector('#myForm'));
@@ -1363,7 +1366,7 @@ function main(evt){
 
 							newProperty.addEventListener('click', getBuilding);
 
-							newProperty.classList.add('buildSelected');
+							getBuilding.call(newProperty);
 				    	}else{
 				    		let newProperty = document.createElement('div');
 							newProperty.classList.add('building');
@@ -1472,7 +1475,7 @@ function main(evt){
 
 						newProperty.addEventListener('click', getBuilding);
 
-						newProperty.classList.add('buildSelected');
+						getBuilding.call(newProperty);
 			    	}else{
 			    		let newProperty = document.createElement('div');
 						newProperty.classList.add('building');
