@@ -168,7 +168,7 @@ function main(evt){
 						//Use slug as property id.
 						newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
 
-						newProperty.addEventListener('click', getProperty);
+						propertyMain.addEventListener('click', getPropertyMain);
 
 						if(propNameSort.classList.contains('sorted')){
 							sortPropertiesNames();
@@ -184,7 +184,7 @@ function main(evt){
 						const sendPropBtn = document.querySelector('#sendPropBtn');
 
 						newProperty.classList.add('propertySelected');
-						getProperty.call(newProperty);
+						getPropertyMain.call(propertyMain);
 
 					};
 					
@@ -254,7 +254,7 @@ function main(evt){
 					//Use slug as property id.
 					newProperty.id = JSON.parse(req.responseText).slug + "_" + JSON.parse(req.responseText).index;
 
-					newProperty.addEventListener('click', getProperty);
+					propertyMain.addEventListener('click', getPropertyMain);
 
 					if(propNameSort.classList.contains('sorted')){
 						sortPropertiesNames();
@@ -270,7 +270,7 @@ function main(evt){
 					const sendPropBtn = document.querySelector('#sendPropBtn');
 
 					newProperty.classList.add('propertySelected');
-					getProperty.call(newProperty);
+					getPropertyMain.call(propertyMain);
 
 				};
 				
@@ -475,7 +475,6 @@ function main(evt){
 			if(currSelection.children[1] !== undefined){
 				currSelection.removeChild(currSelection.children[1]);
 			}
-			currSelection.addEventListener('click', getProperty);
 			
 			currSelection.classList.remove('propertySelected');
 			currSelection.classList.add('property');
@@ -579,13 +578,15 @@ function main(evt){
 
 	//This function is called when a property is clicked.
 	function getProperty(evt){
-		this.removeEventListener('click', getProperty);
 
 		// This class is assigned to whichever property is currently selected.
 		const currSelection = document.querySelector('.propertySelected');
 
+		// This is the current selected building.
 		const buildingSelected = document.querySelector('.buildingSelected');
 
+		// If there is a currently selected building, remove it.
+		// TODO: When there's suites, remove all children.
 		if(buildingSelected !== null){
 			buildingSelected.classList.remove('buildingSelected');
 			buildingSelected.classList.add('building');
@@ -598,6 +599,7 @@ function main(evt){
 				this.classList.add('propertySelected');
 				this.classList.remove('property');
 			}else if(currSelection.id !== this.id){
+				// Remove the buildings interface
 				if(currSelection.children[1] !== undefined){
 					currSelection.removeChild(currSelection.children[1]);
 				}
